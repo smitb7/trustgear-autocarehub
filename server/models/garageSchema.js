@@ -8,8 +8,8 @@ const garageSchema = new mongoose.Schema(
         contactNumber : String
 
     }
-)
+);
 
-const Garage = mongoose.model("Garage", garageSchema)
+const Garage = mongoose.model("Garage", garageSchema);
 
-module.exports = Garage
+module.exports = Garage;

@@ -9,7 +9,7 @@ const vehicleSchema = new mongoose.Schema(
         plateNumber : String,
         runkm : String
     }
-)
-const Vehicle = mongoose.model("Vehicle", vehicleSchema)
+);
+const Vehicle = mongoose.model("Vehicle", vehicleSchema);
 
-module.exports = Vehicle
+module.exports = Vehicle;

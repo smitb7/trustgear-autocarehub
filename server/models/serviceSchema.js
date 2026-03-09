@@ -7,7 +7,7 @@ const serviceSchema = mongoose.Schema(
         description : String,
         price : number 
     }
-) 
+) ;
 
 const Service = mongoose.model("Service", serviceSchema)
 
