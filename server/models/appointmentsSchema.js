@@ -5,14 +5,30 @@ const Service = require("./serviceSchema")
 const Garage = require("./garageSchema")
 
 const appointmentsSchema = new mongoose.Schema({
-    appointmentId : String,
-    userId : String,
-    vehicleId : String, 
-    serviceId: String, 
-    garageId : String, 
+    // appointmentId : String,
+    userId : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
+    vehicleId : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Vehicle"
+    }, 
+    serviceId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Service"
+    }, 
+    garageId : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Garage"
+    }, 
     appointmentDate : Date,
     pickupRequest : Boolean,
-    status : String 
+    status : {
+        type: String,
+        enum: ["Pending", "Approved", "Forwarded", "Completed"],
+        default: "Pending"
+    }
 })
 
 const Appointments = mongoose.model("Appointments", appointmentsSchema);

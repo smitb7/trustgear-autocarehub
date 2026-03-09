@@ -1,8 +1,8 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const garageSchema = new mongoose.Schema(
     {
-        garageId : string,
+        // garageId : String,
         name : String,
         location : String, 
         contactNumber : String

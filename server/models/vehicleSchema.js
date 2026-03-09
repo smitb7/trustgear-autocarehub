@@ -2,12 +2,14 @@ const mongoose = require("mongoose");
 
 const vehicleSchema = new mongoose.Schema(
     {
-        vehicleId : String,
         brand : String,
         model : String,
         year : Number,
-        plateNumber : String,
-        runkm : String
+        plateNumber : {
+            type: String,
+            unique: true
+        },
+        runKm : String
     }
 );
 const Vehicle = mongoose.model("Vehicle", vehicleSchema);

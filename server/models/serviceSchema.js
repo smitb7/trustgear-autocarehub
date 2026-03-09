@@ -1,14 +1,13 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const serviceSchema = mongoose.Schema(
     {
-        serviceId : String, 
         serviceName : String,
         description : String,
-        price : number 
+        price : Number 
     }
 ) ;
 
-const Service = mongoose.model("Service", serviceSchema)
+const Service = mongoose.model("Service", serviceSchema);
 
 module.exports = Service; 

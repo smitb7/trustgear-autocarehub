@@ -1,12 +1,18 @@
 const mongoose = require("mongoose");
-const Appointments = require("./appointmentsSchema")
+const Appointments = require("./appointmentsSchema");
 
 const invoiceSchema = new mongoose.Schema({
     invoiceId : String,
-    appointmentId : mongoose.Schema.Types.ObjectId,
+    appointmentId : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Appointments"
+    },
     amount : Number,
     serviceDetails : String,
-    paymentStatus : String
+    paymentStatus : {
+        type : String,
+        default : "Unpaid"
+    }
 });
 
 
