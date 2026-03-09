@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 const dbconnect = async ()=>{
     try {
-        await mongoose.connect("URL")
+        await mongoose.connect("mongodb://localhost:27017/trustgear")
         console.log("Database Connected...!");
         
     } catch (err) {
