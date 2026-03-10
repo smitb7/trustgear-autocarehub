@@ -1,22 +1,14 @@
 
 const express = require("express")
 const app = express();
-const dbconnect = require("./config/dbconnection")
+const dbconnect = require("./config/dbconnection");
+const { usersRouter } = require("./routs/userRoutes");
 
 
-app.get("/", (req,res)=>{
-    res.send("Hellow Welcome Home..!")
-    
-})
 
-app.get("/admin", (req,res)=>{
-    res.send("Hellow Welcome admin..!")
-    
-})
+app.use("/users", usersRouter)
 
-app.get("/user", (req,res)=>{
-    res.send("Hellow Welcome User...!")
-})
+
 
 app.listen(8080, ()=>{
     

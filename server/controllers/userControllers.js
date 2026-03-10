@@ -1,6 +1,6 @@
 const express = require("express")
 const User = require("../models/usersSchema")
-const { data } = require("react-router-dom")
+
 
 
 // so now we will get the all users first 
@@ -19,7 +19,7 @@ const getUsers = async(req,res)=>{
 
     const readDataofUsers = await User.find()  // get the data according to the usermodel(schema)
 
-    res.status(201).json(
+    res.status(200).json(
 
         {
             data : readDataofUsers,
