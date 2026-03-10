@@ -10,7 +10,7 @@ const getUsers = async(req,res)=>{
     try {
 
     // query for read the data 
-    const readDataofUsers = await User.find()  // get the data according to the usermodel(schema)
+    const readDataofUsers = await User.find()  // get the data from Users collection
 
     res.status(200).json(
 
