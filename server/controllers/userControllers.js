@@ -8,15 +8,10 @@ const User = require("../models/usersSchema")
 const getUsers = async(req,res)=>{
 
     try {
+
+
         // destructuring to get the data from the params 
-
-    const { 
-        name,
-        email,
-        password,
-        role 
-    } = req.params
-
+    
     const readDataofUsers = await User.find()  // get the data according to the usermodel(schema)
 
     res.status(200).json(
