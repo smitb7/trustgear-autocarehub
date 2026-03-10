@@ -9,9 +9,7 @@ const getUsers = async(req,res)=>{
 
     try {
 
-
-        // destructuring to get the data from the params 
-    
+    // query for read the data 
     const readDataofUsers = await User.find()  // get the data according to the usermodel(schema)
 
     res.status(200).json(
