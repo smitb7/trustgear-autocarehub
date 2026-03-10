@@ -4,7 +4,6 @@ const User = require("../models/usersSchema")
 
 
 // so now we will get the all users first 
-
 const getUsers = async(req,res)=>{
 
     try {
@@ -30,5 +29,42 @@ const getUsers = async(req,res)=>{
 
 }
 
+// now we will Update a users by ID  
 
-module.exports = {getUsers}
+const updateUser = async(req,res)=>{
+
+    try {
+
+        const {
+            id 
+        } = req.params.id
+
+        const {name , email, password, role} = req.body
+
+        const updateUserdata =  await User.findByIdAndUpdate(
+            id,
+            {name, email, password, role},
+            {new:true} // for confirmation only
+        )
+
+        res.status(200).json({
+            data : updateUserdata,
+            message : "Your Document is updated..."
+
+        })
+
+
+        
+    } catch (err) {
+            console.log(err);
+            
+        
+
+    }
+}
+
+
+
+
+module.exports = {getUsers, updateUser}
+
