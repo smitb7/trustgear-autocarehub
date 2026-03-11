@@ -2,7 +2,7 @@ const express = require('express')
 
 
 const {getUsers, updateUser, getUsersbyId, deleteUserbyId} = require("../controllers/userControllers")
-const { useReducer } = require('react')
+
 // define users router 
 const usersRouter = express.Router()
 

@@ -2,12 +2,20 @@
 const express = require("express")
 const app = express();
 const dbconnect = require("./config/dbconnection");
+
+
+//import user Router 
 const { usersRouter } = require("./routs/userRoutes");
+//import serviceRouter
+const {serviceRouter} = require("./routs/serviceRoutes")
 
 
 app.use(express.json()); // for parshing the data 
 
+//use userRouters
 app.use("/users", usersRouter)
+//use serviceRouters
+app.use("/service", serviceRouter)
 
 
 
