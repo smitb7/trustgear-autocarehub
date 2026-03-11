@@ -1,5 +1,6 @@
 const express = require("express")
 const User = require("../models/usersSchema")
+const { data } = require("react-router-dom")
 
 
 
@@ -111,11 +112,33 @@ const updateUser = async(req,res)=>{
 
 const deleteUserbyId = async (req,res)=>{
 
+   try {
+
+    const {
+        id
+    } = req.params
+
+    const deletedUser = await User.findByIdAndDelete(id)
+
+    res.status(200).json(
+        {
+            data : deletedUser,
+            message : "Data Deleted Successfully...!!"
+        })
+    
+
+
+   } catch (err) {
+    
+    
+    res.status(500).send("Check Your Server..!")
+    
+   }
 
 }
 
 
 
 
-module.exports = {getUsers, updateUser, getUsersbyId}
+module.exports = {getUsers, updateUser, getUsersbyId, deleteUserbyId}
 
