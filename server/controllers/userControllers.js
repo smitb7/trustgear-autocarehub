@@ -37,13 +37,12 @@ const updateUser = async(req,res)=>{
 
         const {
             id 
-        } = req.params.id
+        } = req.params
 
         const {name , email, password, role} = req.body
 
         const updateUserdata =  await User.findByIdAndUpdate(
             id,
-            {name, email, password, role},
             {new:true} // for confirmation only
         )
 
@@ -56,9 +55,13 @@ const updateUser = async(req,res)=>{
 
         
     } catch (err) {
-            console.log(err);
-            
         
+            console.log(err);
+            res.status(500).json(
+                {
+                    message : "Check in your user update API something wrong...!!"
+                }
+            )
 
     }
 }

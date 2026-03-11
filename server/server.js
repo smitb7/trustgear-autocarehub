@@ -5,6 +5,7 @@ const dbconnect = require("./config/dbconnection");
 const { usersRouter } = require("./routs/userRoutes");
 
 
+app.use(express.json()); // for parshing the data 
 
 app.use("/users", usersRouter)
 

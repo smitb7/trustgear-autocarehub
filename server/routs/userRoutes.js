@@ -7,6 +7,6 @@ const usersRouter = express.Router()
 
 
 usersRouter.get("/", getUsers)
-usersRouter.put("/", updateUser)
+usersRouter.put("/:id", updateUser)
 
 module.exports = {usersRouter}
