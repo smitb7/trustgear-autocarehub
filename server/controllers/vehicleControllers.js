@@ -1,6 +1,7 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const User = require("../models/vehicleSchema")
+const { data } = require("react-router-dom")
 
 
 
@@ -128,9 +129,44 @@ const createVehicleData = async(req, res)=>{
 
 // }
 
+
+
+
 // Update API
 
+const updtevehiclebyId = async(req,res)=>{
 
+   try {
+    
+    const {
+        id 
+    } = req.params
+
+    const {brand, model, year, plateNumber, runKm} = req.body
+
+    const updateVehicle = await User.findByIdAndUpdate(
+        id,
+        {
+            brand : brand,
+            model : model,
+            year : year,
+            plateNumber : plateNumber,
+            runKm : runKm 
+        }
+    )
+
+    res.status(201).json({
+        data : updateVehicle,
+        message : "Your data updated successfully...!"
+    })
+
+
+
+   } catch (error) {
+        res.status(500).send("Vehicle server Down...!")
+   }
+
+}
 
 
 
@@ -174,4 +210,4 @@ const deletevehicleData = async(req,res)=>{
 
 
 
-module.exports ={getallVehicles,getvehiclesbyId, createVehicleData , deletevehicleData}
+module.exports ={getallVehicles,getvehiclesbyId, createVehicleData , deletevehicleData,updtevehiclebyId }
