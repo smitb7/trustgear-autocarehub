@@ -3,7 +3,6 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const User = require("../models/serviceSchema")
-const { data } = require("react-router-dom")
 
 // 1. addService (create a service in DB through to the API)
 
@@ -105,7 +104,7 @@ const updateServicebyId = async (req, res)=>{
         price
     } = req.body
     
-    const updateservicedata = User.findByIdAndUpdate(
+    const updateservicedata = await User.findByIdAndUpdate(
         id,
         {serviceName, description, price}
     
@@ -119,7 +118,7 @@ const updateServicebyId = async (req, res)=>{
 
   } catch (err) {
     
-    res.status(500).send("Server Down...!")
+    res.status(500).send("service Server Down...!")
 
 
   }
@@ -131,11 +130,38 @@ const updateServicebyId = async (req, res)=>{
 
 // for delete service by ID
 
+const deleteservicebyId = async(req, res)=>{
+
+    try {
+        
+        const {
+            id
+        } = req.params
+    
+    
+    
+        const deleteserviceData = await User.findByIdAndDelete(id)
+    
+    
+        res.status(200).json({
+            data : deleteserviceData,
+            message : "Your Data is deleted...!"
+    
+        })
+
+
+    } catch (err) {
+
+        res.status(500).send("Service server Down..!")
+        
+    }
+
+
+}
 
 
 
 
 
 
-
-module.exports = {createService, getallServices, getservicebyId, updateServicebyId}
+module.exports = {createService, getallServices, getservicebyId, updateServicebyId, deleteservicebyId}

@@ -1,6 +1,5 @@
 const express = require("express")
 const User = require("../models/usersSchema")
-const { data } = require("react-router-dom")
 
 
 

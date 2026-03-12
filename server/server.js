@@ -8,6 +8,8 @@ const dbconnect = require("./config/dbconnection");
 const { usersRouter } = require("./routs/userRoutes");
 //import serviceRouter
 const {serviceRouter} = require("./routs/serviceRoutes")
+//import vehiclerouters
+const {vehicleRoute} = require("./routs/vehicleRoutes")
 
 
 app.use(express.json()); // for parshing the data 
@@ -16,6 +18,8 @@ app.use(express.json()); // for parshing the data
 app.use("/users", usersRouter)
 //use serviceRouters
 app.use("/service", serviceRouter)
+//use vehicleRoutes
+app.use("/vehicle", vehicleRoute)
 
 
 
