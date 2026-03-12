@@ -1,7 +1,7 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const User = require("../models/vehicleSchema")
-const { data } = require("react-router-dom")
+
 
 
 //  Get all vehicles 
@@ -83,7 +83,7 @@ const createVehicleData = async(req, res)=>{
         )
 
          
-        res.status(200).json({
+        res.status(201).json({
             data : createVehicleData,
             message : "Your data is created successfully...!"
         })  
@@ -98,38 +98,69 @@ const createVehicleData = async(req, res)=>{
 }
 
 
-// if you want to insert many data at once 
+// if you want to insert many data at once , 
+//
 
-const createmultiplevehicleData = async(req, res)=>{
+// const createmultiplevehicleData = async(req, res)=>{
 
 
-    try {
+//     try {
         
 
-    const { brand, model, year, plateNumber, runKm } = req.body
+//     const {data} = req.body.data
 
-    const createmultipledata = await User.insertMany(
-        {
-            brand : brand,
-                model : model,
-                year : year,
-                plateNumber : plateNumber,
-                runKm : runKm
-        }
-    )
+//     const createmultipledata = await User.insertMany(
+//         data
+//     )
 
-    res.status(200).json({
-        data : createmultipledata,
-        message : " Your data is creates successfully..! " 
-    })
+//     res.status(201).json({
+//         data : createmultipledata,
+//         message : " Your data is created successfully..!" 
+//     })
 
     
 
-    } catch (err) {
+//     } catch (err) {
         
-        res.status(500).send("vehicle server error...!")
+//         res.status(500).send("vehicle server error...!")
 
+//     }
+
+// }
+
+// Update API
+
+
+
+
+
+
+
+
+
+
+
+// now we will move on delete
+
+const deletevehicleData = async(req,res)=>{
+
+    try {
+        
+    const {id} = req.params
+
+    const deleteData = await User.findByIdAndDelete(id) 
+
+    res.status(200).json({
+        data : deleteData,
+        message : "Your data is deleted successfully..!"
+    })
+
+
+    } catch (err) {
+        res.status(500).send("Vehicle server Down..!")  
     }
+
+
 }
 
 
@@ -143,8 +174,4 @@ const createmultiplevehicleData = async(req, res)=>{
 
 
 
-
-
-
-
-module.exports ={getallVehicles,getvehiclesbyId, createVehicleData}
+module.exports ={getallVehicles,getvehiclesbyId, createVehicleData , deletevehicleData}
