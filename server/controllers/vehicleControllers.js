@@ -98,6 +98,40 @@ const createVehicleData = async(req, res)=>{
 }
 
 
+// if you want to insert many data at once 
+
+const createmultiplevehicleData = async(req, res)=>{
+
+
+    try {
+        
+
+    const { brand, model, year, plateNumber, runKm } = req.body
+
+    const createmultipledata = await User.insertMany(
+        {
+            brand : brand,
+                model : model,
+                year : year,
+                plateNumber : plateNumber,
+                runKm : runKm
+        }
+    )
+
+    res.status(200).json({
+        data : createmultipledata,
+        message : " Your data is creates successfully..! " 
+    })
+
+    
+
+    } catch (err) {
+        
+        res.status(500).send("vehicle server error...!")
+
+    }
+}
+
 
 
 
