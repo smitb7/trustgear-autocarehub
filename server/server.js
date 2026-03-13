@@ -1,6 +1,7 @@
 
 const express = require("express")
-const app = express();
+const app = express()
+
 const dbconnect = require("./config/dbconnection");
 
 
@@ -10,6 +11,9 @@ const { usersRouter } = require("./routs/userRoutes");
 const {serviceRouter} = require("./routs/serviceRoutes")
 //import vehiclerouters
 const {vehicleRoute} = require("./routs/vehicleRoutes")
+//import garagerouters
+const {garageRouter} = require("./routs/garageRoutes")
+//
 
 
 app.use(express.json()); // for parshing the data 
@@ -20,6 +24,8 @@ app.use("/users", usersRouter)
 app.use("/service", serviceRouter)
 //use vehicleRoutes
 app.use("/vehicle", vehicleRoute)
+//use garageRouter
+app.use("/garage", garageRouter)
 
 
 

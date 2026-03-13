@@ -12,4 +12,5 @@ const garageSchema = new mongoose.Schema(
 
 const Garage = mongoose.model("Garage", garageSchema);
 
-module.exports = Garage;
+module.exports = Garage
+
