@@ -38,6 +38,36 @@ const displaygarageData = async (req, res) => {
   }
 };
 
+// read the data by ID 
+
+const getdatabyId = async(req,res)=>{
+
+  try {
+    
+
+    const {
+        id
+    } = req.params
+
+    const finddatabyId = await User.findById(id)
+
+    res.status(200).json({
+        data : finddatabyId,
+        message : "here's your data according your ID...!"
+    })
+
+  } catch (err) {
+
+    res.status(500).send("Your Garage Server is Down ")
+    
+  }
+
+}
+
+
+
+
+
 // update data 
 
 const updategarageData = async(req,res)=>{
@@ -79,6 +109,34 @@ const updategarageData = async(req,res)=>{
 }
 
 
+// Delete API 
+
+const deletegarageData = async(req,res)=>{
+
+   try {
+    
+    const {
+        id
+    } = req.params
+
+
+    const deleteData = await User.findByIdAndDelete(id)
+
+    res.status(200).json({
+
+        data : deleteData,
+        message : "data is deleted...!"
+    })
+
+
+   } catch (err) {
+
+    res.status(500).send("Garage Server Down..!")
+
+   }
+
+
+}
 
 
 
@@ -89,5 +147,4 @@ const updategarageData = async(req,res)=>{
 
 
 
-
-module.exports = {insertgarageData, displaygarageData, updategarageData}
+module.exports = {insertgarageData,getdatabyId, displaygarageData, updategarageData, deletegarageData}
