@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const User = require("../models/garageSchema");
+const { data } = require("react-router-dom");
 
 //  create for garage
 
@@ -39,6 +40,43 @@ const displaygarageData = async (req, res) => {
 
 // update data 
 
+const updategarageData = async(req,res)=>{
+
+    try {
+        
+        const {
+            id
+        } = req.params   
+
+        const {
+            name,
+            location,
+            contactNumber
+        } = req.body
+    
+    
+        const updateData = await User.findByIdAndUpdate(id ,
+            {
+                name : name,
+                location : location,
+                contactNumber : contactNumber
+            }
+        )
+
+        res.status(201).json({
+            data : updateData,
+            message : "Your data is Updated..!" 
+        })
+
+
+    } catch (err) {
+
+        res.status(500).send('Your Garage Server is Down..!')
+        
+    }
+
+
+}
 
 
 
@@ -50,4 +88,6 @@ const displaygarageData = async (req, res) => {
 
 
 
-module.exports = {insertgarageData, displaygarageData}
+
+
+module.exports = {insertgarageData, displaygarageData, updategarageData}
