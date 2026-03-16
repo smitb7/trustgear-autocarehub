@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const User = require('../models/appointmentsSchema')
+const { data } = require('react-router-dom')
 
 
 
@@ -100,7 +101,79 @@ const getappointmentsbyId = async(req,res)=>{
 }
 
 
+const updateAppointment = async(req,res)=>{
+
+    try {
+
+        const {
+            id
+        } = req.params 
+
+        const {
+            userId,
+            vehicleId,
+            serviceId,
+            garageId,
+            appointmentDate,
+            pickupRequest,
+            status
+        } = req.body
+
+        const updateAppointmentData = await User.findByIdAndUpdate(id,
+            {
+            userId,
+            vehicleId,
+            serviceId,
+            garageId,
+            appointmentDate,
+            pickupRequest,
+            status
+            }
+        )
+
+
+        res.status(200).json({
+            data : updateAppointmentData,
+            message : "Your Data is updated according to your ID...!"
+        })
+
+
+    } catch (err) {
+
+
+        res.status(500).send("appointment server Down...!")
+        
+    }
+
+}
 
 
 
-module.exports ={createAppointment, getallappointmentData, getappointmentsbyId}
+const deleteAppointment = async(req,res)=>{
+
+   try {
+
+    const {
+        id
+    } = req.params
+
+   
+
+
+    const deleteAppointmentData = await User.findByIdAndDelete(id)
+
+
+    res.status(200).json({
+        data : deleteAppointmentData,
+        message  : "Your Data is Deleted according to your id...!"
+    })
+
+   } catch (err) {
+    
+    res.status(500).send("appointment server Down...!")
+   }
+
+}
+
+
+module.exports ={createAppointment, getallappointmentData, getappointmentsbyId, updateAppointment, deleteAppointment}
