@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const User = require('../models/appointmentsSchema')
-const { data } = require('react-router-dom')
+
 
 
 
@@ -23,7 +23,7 @@ const createAppointment = async(req,res)=>{
         } = req.body
         
 
-        const createappointmentData = await User.insertOne({
+        const createappointmentData = await User.create({
             userId : userId,
             vehicleId : vehicleId,
             serviceId: serviceId,
@@ -34,12 +34,12 @@ const createAppointment = async(req,res)=>{
         })
 
 
-        res.status(200).send ({
+        res.status(201).send ({
             data : createappointmentData,
             message : "Your Data has been created"
         })
     } catch (err) { 
-
+        console.log(err)
         res.status(500).send("appointment server Down...!")
         
     }
@@ -50,3 +50,57 @@ const createAppointment = async(req,res)=>{
 
 
 
+// now to get All appointments with the use of read(get)
+
+const getallappointmentData = async(req,res)=>{
+
+   try {
+
+    const getappointmentData = await User.find()
+
+    res.status(200).json({
+        data : getappointmentData,
+        message : "Your appointment data is displayed here..!"
+    })
+
+   } catch (err) {
+
+    res.status(500).send("appointment server Down...!")
+    
+   }
+
+
+}
+
+// Get appointments by ID 
+
+const getappointmentsbyId = async(req,res)=>{
+
+ try {
+
+    const {
+        id
+    } = req.params
+
+
+    const getdatabyId = await User.findById(id);
+
+    res.status(200).json({
+        data : getdatabyId,
+        message : "This is your data according to the ID..!"
+    })
+
+
+ } catch (err) {
+    
+    res.status(500).send("appointment server Down...!")
+ }
+
+
+}
+
+
+
+
+
+module.exports ={createAppointment, getallappointmentData, getappointmentsbyId}

@@ -13,7 +13,8 @@ const {serviceRouter} = require("./routs/serviceRoutes")
 const {vehicleRoute} = require("./routs/vehicleRoutes")
 //import garagerouters
 const {garageRouter} = require("./routs/garageRoutes")
-//
+//appointment router
+const {appointmentRouter} = require("./routs/appointmentRoutes")
 
 
 app.use(express.json()); // for parshing the data 
@@ -26,6 +27,8 @@ app.use("/service", serviceRouter)
 app.use("/vehicle", vehicleRoute)
 //use garageRouter
 app.use("/garage", garageRouter)
+//use appointmentRouter
+app.use("/appointment", appointmentRouter)
 
 
 
