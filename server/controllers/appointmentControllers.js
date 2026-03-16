@@ -2,7 +2,6 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const User = require('../models/appointmentsSchema')
-const { data } = require('react-router-dom')
 
 
 
@@ -128,7 +127,8 @@ const updateAppointment = async(req,res)=>{
             appointmentDate,
             pickupRequest,
             status
-            }
+            },
+            { new: true }
         )
 
 
@@ -177,3 +177,5 @@ const deleteAppointment = async(req,res)=>{
 
 
 module.exports ={createAppointment, getallappointmentData, getappointmentsbyId, updateAppointment, deleteAppointment}
+
+
