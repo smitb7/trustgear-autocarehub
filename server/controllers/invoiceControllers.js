@@ -2,6 +2,8 @@ const express = require("express")
 const mongoose = require("mongoose")
 
 const User = require("../models/invoiceSchema")
+const Invoice = require("../models/invoiceSchema")
+const { data } = require("react-router-dom")
 
 
 
@@ -39,10 +41,16 @@ const getinvoicebyId = async(req,res)=>{
 
         const getinvoicesbyId = await User.findById(id)
 
-        res.
+        res.status(200).json({
+            
+            data : getinvoicesbyId,
+            message : "This is your data according to your..!" 
+        })
 
     } catch (err) {
-        
+
+        res.status(500).send("Invoice Server is Down..!")
+
     }    
 
 
@@ -50,6 +58,55 @@ const getinvoicebyId = async(req,res)=>{
 
 
 
+// now create invoice
+
+const createInvoice = async(req,res)=>{
+
+        const createinvoiceData = async(req,res)=>{
+
+            try {
+
+                const {
+                    invoiceId,
+                    appointmentId,
+                    amount,
+                    serviceDetails,
+                    paymentStatus
+                } = req.body
 
 
-module.exports = {getallInvoices}
+                const createData = await User.create({
+                    invoiceId : invoiceId,
+                    appointmentId : appointmentId,
+                    amount : amount,
+                    serviceDetails : serviceDetails,
+                    paymentStatus : paymentStatus
+                })
+
+
+                res.status(200).json({
+                    data : createData,
+                    message : "Your data is successfully created...!"
+                })
+
+            } catch (err) {
+
+                res.status(500).send("Invoice Server is Down..!")
+                
+            }
+
+        }
+
+
+    
+
+}
+
+
+
+
+
+
+
+
+module.exports = {getallInvoices, getinvoicebyId, createInvoice}
