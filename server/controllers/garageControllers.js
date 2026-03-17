@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const User = require("../models/garageSchema");
-const { data } = require("react-router-dom");
 
 //  create for garage
 

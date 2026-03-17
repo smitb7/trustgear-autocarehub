@@ -2,8 +2,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 
 const User = require("../models/invoiceSchema")
-const Invoice = require("../models/invoiceSchema")
-const { data } = require("react-router-dom")
+
 
 
 
@@ -62,8 +61,6 @@ const getinvoicebyId = async(req,res)=>{
 
 const createInvoice = async(req,res)=>{
 
-        const createinvoiceData = async(req,res)=>{
-
             try {
 
                 const {
@@ -84,7 +81,7 @@ const createInvoice = async(req,res)=>{
                 })
 
 
-                res.status(200).json({
+                res.status(201).json({
                     data : createData,
                     message : "Your data is successfully created...!"
                 })
@@ -98,7 +95,75 @@ const createInvoice = async(req,res)=>{
         }
 
 
-    
+// update API 
+
+
+const updateInvoice = async(req,res)=>{
+
+
+    try {
+        
+        const {
+            id
+        } = req.params
+
+        const {
+            invoiceId,
+            appointmentId,
+            amount,
+            serviceDetails,
+            paymentStatus
+
+        } = req.body 
+        
+        const updateData = await User.findByIdAndUpdate(id,
+            {
+                invoiceId : invoiceId,
+                appointmentId : appointmentId,
+                amount : amount,
+                serviceDetails : serviceDetails,
+                paymentStatus : paymentStatus
+            }
+        )
+
+        res.status(201).json({
+            data : updateData,
+            message : " Your Data is successfully updated..!" 
+        })
+
+    } catch (err) {
+
+        res.status(500).send("Invoice Server is Down..!")
+
+    }
+
+}
+
+// delete API for invoice 
+
+
+
+const deleteInvoice = async(req,res)=>{
+
+    try {
+        
+        const {
+            id
+        } = req.params
+
+        const deleteinvoiceData = await User.findByIdAndDelete(id)
+
+        res.status(200).json({
+            data : deleteinvoiceData,
+            message : "Your data is deleted successfully..!"
+        })
+
+
+    } catch (err) { 
+
+        res.status(500).send("Invoice Server is Down..!")
+        
+    }
 
 }
 
@@ -109,4 +174,6 @@ const createInvoice = async(req,res)=>{
 
 
 
-module.exports = {getallInvoices, getinvoicebyId, createInvoice}
+
+
+module.exports = {getallInvoices, getinvoicebyId, createInvoice, updateInvoice , deleteInvoice}
