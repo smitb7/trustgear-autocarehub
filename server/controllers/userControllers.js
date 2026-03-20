@@ -1,5 +1,6 @@
 const express = require("express")
 const User = require("../models/usersSchema")
+const { data } = require("react-router-dom")
 
 
 
@@ -136,8 +137,39 @@ const deleteUserbyId = async (req,res)=>{
 
 }
 
+const auth = async(req,res)=>{
+
+    try {
+
+        const {
+            name , email, password, role
+        } = req.body;
+        
+        const createUser = await User.create({
+            name , email, password, role
+        })
+
+        res.status(201).json({
+            data : createUser,
+            message : "User is created..!"
+        })
+
+
+    } catch (err) {
+
+        console.log(err);
+        res.status(500).json({
+            message : "something wrong"
+        })
+        
+        
+    }
+
+
+}
 
 
 
-module.exports = {getUsers, updateUser, getUsersbyId, deleteUserbyId}
+
+module.exports = {getUsers, updateUser, getUsersbyId, deleteUserbyId, auth}
 
