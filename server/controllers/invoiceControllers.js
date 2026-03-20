@@ -24,7 +24,7 @@ const getallInvoices = async(req,res)=>{
         res.status(500).send("Invoice Server is Down..!")
 
 
-    }
+    } 
 
 }
 
