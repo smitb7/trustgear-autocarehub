@@ -1,6 +1,6 @@
 const express = require("express")
 const User = require("../models/usersSchema")
-const { data } = require("react-router-dom")
+const bcrypt = require("bcrypt")
 
 
 
@@ -145,8 +145,16 @@ const auth = async(req,res)=>{
             name , email, password, role
         } = req.body;
         
+        //hashing (security) 
+        // we can compromise with the time but not with the security
+        const hashedPassword = await bcrypt.hashSync(password, 16)
+
+
         const createUser = await User.create({
-            name , email, password, role
+            name ,
+            email, 
+            password : hashedPassword, 
+            role
         })
 
         res.status(201).json({

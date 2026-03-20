@@ -11,7 +11,7 @@ usersRouter.get("/", getUsers)
 usersRouter.get("/:id", getUsersbyId)
 usersRouter.put("/:id", updateUser)
 usersRouter.delete("/:id", deleteUserbyId)
-usersRouter.post("/", auth)
+usersRouter.post("/sign-up", auth)
 
 
 module.exports = {usersRouter}
