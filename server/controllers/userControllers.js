@@ -1,8 +1,7 @@
 const express = require("express")
 const User = require("../models/usersSchema")
 const bcrypt = require("bcrypt")
-const { data } = require("react-router-dom")
-
+const jwt = require("jsonwebtoken")
 
 
 
@@ -144,6 +143,8 @@ const auth = async(req,res)=>{
 
     try {
 
+        
+        
         const {
             name , email, password, role
         } = req.body;
@@ -186,6 +187,9 @@ const auth = async(req,res)=>{
 const loginUser = async(req,res)=>{
     try {
         
+        const token = req.headers["authorization"]
+        console.log(token);
+
         const {
             email,
             password
@@ -209,12 +213,32 @@ const loginUser = async(req,res)=>{
 
         // if password correct  
         if(isPasswordCorrect){
+
+
+
+            // json web token 
+            const token = jwt.sign(
+            // first parimeter
+                {
+                id : userFound._id,
+                email : userFound.email,
+            },
+            //  second parimeter (signature- secret)
+            "This-is-super-secret-string-which-can-be-anything",
+            //third parimeter
+            {expiresIn : "2h"}
+        )
+
+
+
+
             res.json({
 
                 message : "logged in successfully..!",
                 data : {
                     name : userFound.name,
                     email : userFound.email,
+                    token
                     
                 }
             })
