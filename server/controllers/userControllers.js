@@ -1,6 +1,7 @@
 const express = require("express")
 const User = require("../models/usersSchema")
 const bcrypt = require("bcrypt")
+const { data } = require("react-router-dom")
 
 
 
@@ -137,6 +138,8 @@ const deleteUserbyId = async (req,res)=>{
 
 }
 
+
+// auth sign-up
 const auth = async(req,res)=>{
 
     try {
@@ -177,7 +180,54 @@ const auth = async(req,res)=>{
 }
 
 
+//login
 
 
-module.exports = {getUsers, updateUser, getUsersbyId, deleteUserbyId, auth}
+const loginUser = async(req,res)=>{
+    try {
+        
+        const {
+            email,
+            password
+        } = req.body
+
+        //step.1 (User is found or not ?)
+        const userFound = await User.findOne({
+            email
+        })
+        // if user is not found 
+        if(!userFound){
+            res.status(404).json({
+                message : "user not userFound..!!"
+            })
+        }
+
+        // if found 
+        //step.2 , now check the password 
+
+        const isPasswordCorrect = bcrypt.compareSync(password, userFound.password)
+
+        // if password correct  
+        if(isPasswordCorrect){
+            res.json({
+
+                message : "logged in successfully..!",
+                data : {
+                    name : userFound.name,
+                    email : userFound.email,
+                    
+                }
+            })
+        }
+
+
+
+    } catch (error) {
+        res.status(404).json({
+            message : "invalid Credentials...!"
+        })
+    }
+}
+
+module.exports = {getUsers, updateUser, getUsersbyId, deleteUserbyId, auth, loginUser}
 
