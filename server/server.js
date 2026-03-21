@@ -17,11 +17,17 @@ const {garageRouter} = require("./routs/garageRoutes")
 const {appointmentRouter} = require("./routs/appointmentRoutes")
 //invoice router
 const {invoiceRouter} = require("./routs/invoiceRoutes");
-const { loginUser } = require("./controllers/userControllers");
+// const { loginUser } = require("./controllers/userControllers");
+
+//auth require
 
 
 
 app.use(express.json()); // for parshing the data 
+
+
+//auth middleware (use)
+
 
 //use userRouters
 app.use("/users", usersRouter)

@@ -6,7 +6,6 @@ const {getUsers, updateUser, getUsersbyId, deleteUserbyId, auth, loginUser} = re
 // define users router 
 const usersRouter = express.Router()
 
-
 usersRouter.get("/", getUsers)
 usersRouter.get("/:id", getUsersbyId)
 usersRouter.put("/:id", updateUser)
