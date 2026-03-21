@@ -186,10 +186,25 @@ const auth = async(req,res)=>{
 
 const loginUser = async(req,res)=>{
     try {
-        
-        const token = req.headers["authorization"]
-        console.log(token);
 
+
+        const token = req.headers["authorization"]
+        // console.log(token);
+
+        if(!token){
+            res.status(401).send("Please login first...!")
+        }
+
+        const decoded = jwt.verify(token, "This-is-super-secret-string-which-can-be-anything", (err,decoded)=>{
+            if(err){
+                res.status(401).send("Your Token is not valid..!")
+            }
+            console.log(decoded);
+            
+        })
+
+
+    
         const {
             email,
             password
@@ -228,8 +243,6 @@ const loginUser = async(req,res)=>{
             //third parimeter
             {expiresIn : "2h"}
         )
-
-
 
 
             res.json({
