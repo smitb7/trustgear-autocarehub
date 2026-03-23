@@ -12,7 +12,7 @@ const authMiddleware = (req,res,next)=>{
                 // console.log(token);
 
         const token = authHeader.split(" ")[1];
-        
+
                 if(!token){
                     res.status(401).send("Please login first...!")
                 }
@@ -22,7 +22,7 @@ const authMiddleware = (req,res,next)=>{
                         res.status(401).send("Your Token is not valid..!")
                     }
                     // console.log (decoded);
-                    res.user = decoded;
+                    req.user = decoded;
                     next() ; 
                 })
 

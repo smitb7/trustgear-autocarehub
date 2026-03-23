@@ -2,6 +2,8 @@ const express = require("express")
 const User = require("../models/usersSchema")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const BlacklistToken = require("../models/blacklistTokenschema" 
+    
 
 
 
@@ -247,6 +249,21 @@ const loginUser = async(req,res)=>{
             message : "invalid Credentials...!"
         })
     }
+}
+
+
+
+// log OUT 
+
+const logout = async (req,res)=>{
+
+    const authHeaader = req.headers["authorization"] ;
+    const token = authHeader.split(" ")[1] ;
+
+    const newToken = await BlacklistToken
+
+
+
 }
 
 module.exports = {getUsers, updateUser, getUsersbyId, deleteUserbyId, auth, loginUser}

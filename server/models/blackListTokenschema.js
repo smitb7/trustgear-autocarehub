@@ -1,0 +1,15 @@
+const mongoose = require("mongoose")
+
+const blackListTokenschema = new mongoose.Schema({
+
+    token : {
+        type : String,
+        require : true
+    }
+
+}, {timestamps, 
+    versionKey : false})
+
+const BlacklistToken =  mongoose.model("BlacklistToken", blackListTokenschema)
+
+module.exports = BlacklistToken
