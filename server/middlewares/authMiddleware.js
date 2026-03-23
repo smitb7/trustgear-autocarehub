@@ -1,6 +1,7 @@
 const express = require("express")
 const jwt = require("jsonwebtoken")
-const BlacklistToken = require("../models/blackListTokenschema")
+const BlacklistToken = require("../models/blackListTokenschema");
+
 
 
 
@@ -19,7 +20,7 @@ const authMiddleware = async (req,res,next)=>{
                     res.status(401).send("Please login first...!")
                 }
                 
-                const tokenExist = BlacklistToken.findOne({
+                const tokenExist = await BlacklistToken.findOne({
                     token
                 })
 
