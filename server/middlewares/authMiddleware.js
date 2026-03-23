@@ -1,10 +1,12 @@
 const express = require("express")
 const jwt = require("jsonwebtoken")
+const BlacklistToken = require("../models/blackListTokenschema")
 
 
 
 
-const authMiddleware = (req,res,next)=>{
+
+const authMiddleware = async (req,res,next)=>{
 
     try {
         
@@ -16,7 +18,17 @@ const authMiddleware = (req,res,next)=>{
                 if(!token){
                     res.status(401).send("Please login first...!")
                 }
-        
+                
+                const tokenExist = BlacklistToken.findOne({
+                    token
+                })
+
+                if(tokenExist){
+                    res.status(403).json({
+                        message : " You are logged out . please generate a new token"
+                    })
+                }
+
                 const decoded = jwt.verify(token, "This-is-super-secret-string-which-can-be-anything", (err,decoded)=>{
                     if(err){
                         res.status(401).send("Your Token is not valid..!")

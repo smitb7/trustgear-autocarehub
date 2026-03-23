@@ -2,8 +2,8 @@ const express = require("express")
 const User = require("../models/usersSchema")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const BlacklistToken = require("../models/blacklistTokenschema" 
-    
+const BlacklistToken = require("../models/blacklistTokenschema")
+
 
 
 
@@ -260,11 +260,16 @@ const logout = async (req,res)=>{
     const authHeaader = req.headers["authorization"] ;
     const token = authHeader.split(" ")[1] ;
 
-    const newToken = await BlacklistToken
+    const newToken = await BlacklistToken.create({
+            token
+    }) 
 
+    res.status(200).json({
+        message : "Logged out successfully..!"
+    })
 
 
 }
 
-module.exports = {getUsers, updateUser, getUsersbyId, deleteUserbyId, auth, loginUser}
+module.exports = {getUsers, updateUser, getUsersbyId, deleteUserbyId, auth, loginUser, logout}
 

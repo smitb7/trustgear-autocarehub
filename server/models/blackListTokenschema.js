@@ -7,7 +7,7 @@ const blackListTokenschema = new mongoose.Schema({
         require : true
     }
 
-}, {timestamps, 
+}, {timestamps : true, 
     versionKey : false})
 
 const BlacklistToken =  mongoose.model("BlacklistToken", blackListTokenschema)
