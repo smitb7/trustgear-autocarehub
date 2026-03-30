@@ -226,7 +226,7 @@ const loginUser = async(req,res)=>{
             //  second parimeter (signature- secret)
             "This-is-super-secret-string-which-can-be-anything",
             //third parimeter
-            {expiresIn : "2h"}
+            {expiresIn : "2h" }
         )
 
 

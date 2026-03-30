@@ -5,8 +5,8 @@ const{getallVehicles, getvehiclesbyId,createVehicleData, deletevehicleData, updt
 const authMiddleware = require("../middlewares/authMiddleware")
 
 vehicleRoute.get("/",authMiddleware, getallVehicles)
-vehicleRoute.get("/:id",authMiddleware, getvehiclesbyId)
-vehicleRoute.post("/", authMiddleware,  createVehicleData)
+vehicleRoute.get("/:id",authMiddleware,  getvehiclesbyId)
+vehicleRoute.post("/", authMiddleware, createVehicleData)
 vehicleRoute.delete("/:id",authMiddleware, deletevehicleData)
 vehicleRoute.put("/:id",authMiddleware, updtevehiclebyId)
 
