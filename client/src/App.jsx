@@ -1,5 +1,13 @@
-import Login from "./pages/Login"
+import { React } from "react";
 
-export default function App() {
-  return <Login />
+function App() {
+  return (
+    <h1 className="text-5xl font-bold text-gray-600 underline">
+
+      Tailwind Test!
+      
+    </h1>
+  );
 }
+
+export default App;
