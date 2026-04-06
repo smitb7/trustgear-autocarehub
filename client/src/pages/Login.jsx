@@ -1,65 +1,50 @@
-import { useState } from "react";
-import { loginUser } from "../API/userApi";
+import React, { useState } from "react";
+import { loginUser } from "../api/userApi"; 
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+const Login = () => {
   const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-
-  // handle input change
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const res = await loginUser(form);
-
-      // store token
-      localStorage.setItem("token", res.data.token);
-
-      // redirect
-      navigate("/dashboard");
-    } catch (err) {
-      console.log(err);
-      alert("Login failed");
-    }
+    const res = await loginUser(form);
+    if (res.data.success) navigate("/dashboard");
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <form onSubmit={handleSubmit} className="p-6 shadow-lg rounded w-96">
-        <h2 className="text-2xl mb-4">Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
+          TrustGear Login
+        </h1>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          className="w-full p-2 mb-3 border"
-          onChange={handleChange}
-        />
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block mb-1 font-medium">Email</label>
+            <input
+              type="email"
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+          </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          className="w-full p-2 mb-3 border"
-          onChange={handleChange}
-        />
+          <div>
+            <label className="block mb-1 font-medium">Password</label>
+            <input
+              type="password"
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+          </div>
 
-        <button className="bg-blue-500 text-white w-full p-2">
-          Login
-        </button>
-      </form>
+          <button className="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-2 rounded-lg font-semibold">
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
-}
+};
 
 export default Login;
