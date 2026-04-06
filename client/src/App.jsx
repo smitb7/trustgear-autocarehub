@@ -1,12 +1,9 @@
 import { React } from "react";
+import Login from "./pages/Login";
 
 function App() {
   return (
-    <h1 className="text-5xl font-bold text-gray-600 underline">
-
-      Tailwind Test!
-      
-    </h1>
+      <Login />
   );
 }
 

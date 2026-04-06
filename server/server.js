@@ -1,8 +1,8 @@
 
 const express = require("express")
 const app = express()
-
 const dbconnect = require("./config/dbconnection");
+const cors = require("cors")
 
 
 //import user Router 
