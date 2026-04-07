@@ -1,15 +1,33 @@
 import React, { useState } from "react";
-import { loginUser } from "../api/userApi"; 
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../api/userApi.js"; // ensure this points to your API
 
 const Login = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await loginUser(form);
-    if (res.data.success) navigate("/dashboard");
+    setError("");
+
+    try {
+      const res = await loginUser({ email: form.email, password: form.password });
+      console.log("Response:", res);
+
+      const token = res?.data?.data?.token;
+      if (!token) {
+        setError("Login failed: token missing");
+        return;
+      }
+
+      localStorage.setItem("token", token);
+      alert("Successfully logged in!");
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Invalid credentials or server error");
+    }
   };
 
   return (
@@ -19,13 +37,17 @@ const Login = () => {
           TrustGear Login
         </h1>
 
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block mb-1 font-medium">Email</label>
             <input
               type="email"
               className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
+              required
             />
           </div>
 
@@ -34,11 +56,16 @@ const Login = () => {
             <input
               type="password"
               className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
+              required
             />
           </div>
 
-          <button className="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-2 rounded-lg font-semibold">
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-2 rounded-lg font-semibold"
+          >
             Login
           </button>
         </form>

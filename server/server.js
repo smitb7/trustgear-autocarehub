@@ -22,6 +22,9 @@ const {invoiceRouter} = require("./routs/invoiceRoutes");
 //auth require
 
 
+//front connectionc
+app.use(cors());
+
 
 app.use(express.json()); // for parshing the data 
 
