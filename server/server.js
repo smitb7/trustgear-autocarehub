@@ -1,9 +1,20 @@
-
 const express = require("express")
 const app = express()
 const dbconnect = require("./config/dbconnection");
 const cors = require("cors")
 
+//json
+app.use(express.json());
+
+
+//front connectionc
+app.use(cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+  })); 
+
+  
 
 //import user Router 
 const { usersRouter } = require("./routs/userRoutes");
@@ -22,11 +33,8 @@ const {invoiceRouter} = require("./routs/invoiceRoutes");
 //auth require
 
 
-//front connectionc
-app.use(cors());
 
 
-app.use(express.json()); // for parshing the data 
 
 
 //auth middleware (use)

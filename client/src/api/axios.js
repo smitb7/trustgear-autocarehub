@@ -5,14 +5,17 @@ const API = axios.create({
 });
 
 API.interceptors.request.use((req) => {
-  // Don't attach token to login or sign-up
-  if (
-    req.url === "/users/login" ||
-    req.url === "/users/sign-up"
-  ) {
+  const publicRoutes = [
+    "users/login",
+    "users/sign-up"
+  ];
+
+  // If request URL includes any public route → skip token
+  if (publicRoutes.some((route) => req.url.includes(route))) {
     return req;
   }
 
+  // Otherwise attach token
   const token = localStorage.getItem("token");
   if (token) {
     req.headers.Authorization = `Bearer ${token}`;
