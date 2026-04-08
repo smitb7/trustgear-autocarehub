@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
-const User = require('../models/appointmentsSchema')
+const Appointments = require('../models/appointmentsSchema')
 
 
 
@@ -23,7 +23,7 @@ const createAppointment = async(req,res)=>{
         } = req.body
         
 
-        const createappointmentData = await User.create({
+        const createappointmentData = await Appointments.create({
             userId : userId,
             vehicleId : vehicleId,
             serviceId: serviceId,
@@ -52,25 +52,23 @@ const createAppointment = async(req,res)=>{
 
 // now to get All appointments with the use of read(get)
 
-const getallappointmentData = async(req,res)=>{
-
-   try {
-
-    const getappointmentData = await User.find()
-
-    res.status(200).json({
-        data : getappointmentData,
-        message : "Your appointment data is displayed here..!"
-    })
-
-   } catch (err) {
-
-    res.status(500).send("appointment server Down...!")
-    
-   }
-
-
-}
+const getallappointmentData = async (req, res) => {
+    try {
+      const appointments = await Appointments.find()
+        .populate("userId", "name email")
+        .populate("vehicleId", "model brand")
+        .populate("serviceId", "serviceName")
+        .populate("garageId", "name");
+  
+      res.status(200).json({
+        data: appointments,
+        message: "Appointments fetched successfully",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
 
 // Get appointments by ID 
 
@@ -83,7 +81,7 @@ const getappointmentsbyId = async(req,res)=>{
     } = req.params
 
 
-    const getdatabyId = await User.findById(id);
+    const getdatabyId = await Appointments.findById(id);
 
     res.status(200).json({
         data : getdatabyId,
@@ -118,7 +116,7 @@ const updateAppointment = async(req,res)=>{
             status
         } = req.body
 
-        const updateAppointmentData = await User.findByIdAndUpdate(id,
+        const updateAppointmentData = await Appointments.findByIdAndUpdate(id,
             {
             userId,
             vehicleId,
@@ -160,7 +158,7 @@ const deleteAppointment = async(req,res)=>{
    
 
 
-    const deleteAppointmentData = await User.findByIdAndDelete(id)
+    const deleteAppointmentData = await Appointments.findByIdAndDelete(id)
 
 
     res.status(200).json({

@@ -5,7 +5,7 @@ const appointmentRouter = express.Router()
 const authMiddleware = require("../middlewares/authMiddleware")
 
 
-appointmentRouter.get("/", authMiddleware ,getallappointmentData)
+appointmentRouter.get("/",getallappointmentData)
 appointmentRouter.get("/:id",authMiddleware ,getappointmentsbyId)
 appointmentRouter.post("/",authMiddleware ,createAppointment)
 appointmentRouter.put("/:id", authMiddleware ,updateAppointment)
