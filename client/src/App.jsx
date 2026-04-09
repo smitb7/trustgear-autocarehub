@@ -1,19 +1,21 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public Route */}
         <Route path="/login" element={<Login />} />
 
+        {/* Protected Routes */}
         <Route
-          path="/dashboard"
+          path="/*"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <AppRoutes />
             </ProtectedRoute>
           }
         />
