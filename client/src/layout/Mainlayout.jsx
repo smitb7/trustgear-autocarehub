@@ -1,13 +1,15 @@
+import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { Outlet } from "react-router-dom";
 
-export default function MainLayout() {
+const MainLayout = () => {
   return (
     <div className="flex">
+      {/* Sidebar */}
       <Sidebar />
 
-      <div className="ml-64 w-full">
+      {/* Right Content */}
+      <div className="flex-1">
         <Navbar />
 
         <div className="p-6">
@@ -16,4 +18,6 @@ export default function MainLayout() {
       </div>
     </div>
   );
-}
+};
+
+export default MainLayout;
