@@ -10,15 +10,12 @@ export default function AppRoutes() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        {/* Dashboard */}
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-
-        {/* Pages */}
-        <Route path="/appointments" element={<Appointments />} />
-        <Route path="/vehicles" element={<Vehicles />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/garages" element={<Garages />} />
+        <Route index element={<Dashboard />} />              {/* "/" */}
+        <Route path="dashboard" element={<Dashboard />} />   {/* "/dashboard" */}
+        <Route path="appointments" element={<Appointments />} />
+        <Route path="vehicles" element={<Vehicles />} />
+        <Route path="services" element={<Services />} />
+        <Route path="garages" element={<Garages />} />
       </Route>
     </Routes>
   );

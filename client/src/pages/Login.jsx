@@ -23,7 +23,7 @@ const Login = () => {
 
       localStorage.setItem("token", token);
       alert("Successfully logged in!");
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       console.error("Login error:", err);
       setError("Invalid credentials or server error");
