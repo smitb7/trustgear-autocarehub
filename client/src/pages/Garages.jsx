@@ -1,3 +1,5 @@
-export default function Garages() {
-    return <div>Garages Page</div>;
-  }
+const Garages = () => {
+    return <h1>This is a Garage page</h1>;
+  };
+  
+  export default Garages;

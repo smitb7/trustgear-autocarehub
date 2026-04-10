@@ -126,28 +126,28 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
 
-        <button
-          onClick={() => navigate("/services/add")}
-          className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
-        >
-           Add Service
-        </button>
+  <button
+    onClick={() => navigate("/services/add")}
+    className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
+  >
+    Add Service
+  </button>
 
-        <button
-          onClick={() => navigate("/vehicles/add")}
-          className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
-        >
-          Add Vehicle
-        </button>
+  <button
+    onClick={() => navigate("/vehicles/add")}
+    className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
+  >
+    Add Vehicle
+  </button>
 
-        <button
-          onClick={() => navigate("/garages/add")}
-          className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
-        >
-          Add Garage
-        </button>
+  <button
+    onClick={() => navigate("/garages/add")}
+    className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
+  >
+    Add Garage
+  </button>
 
-      </div>
+</div>
     </div>
   );
 };
