@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Toast from "../components/Toast";
 import { createService } from "../api/serviceApi";
 
 const AddService = () => {
@@ -9,7 +10,22 @@ const AddService = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+
+  // Toast state
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
+
+  // Show toast message
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+
+    setTimeout(() => {
+      setToast({ show: false, message: "", type: "success" });
+    }, 2500);
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,18 +34,17 @@ const AddService = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
 
     try {
-      const response = await createService(formData);
+      await createService(formData);
 
-      setMessage("Service added successfully!");
+      showToast("Service added successfully!", "success");
+
+      // Reset form
       setFormData({ serviceName: "", description: "", price: "" });
-
-      setTimeout(() => setMessage(""), 3000);
     } catch (error) {
-      setMessage("Error adding service.");
       console.error(error.response?.data || error);
+      showToast("Error adding service.", "error");
     }
 
     setLoading(false);
@@ -37,13 +52,15 @@ const AddService = () => {
 
   return (
     <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Add New Service</h1>
+      {/* Toast at top */}
+      <Toast
+        show={toast.show}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ show: false, message: "", type: "success" })}
+      />
 
-      {message && (
-        <div className="mb-4 p-3 bg-blue-100 text-blue-700 rounded">
-          {message}
-        </div>
-      )}
+      <h1 className="text-3xl font-bold mb-6">Add New Service</h1>
 
       <form
         onSubmit={handleSubmit}

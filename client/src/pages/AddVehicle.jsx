@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createVehicle } from "../api/vehicleApi";
+import Toast from "../components/Toast";
 
 const AddVehicle = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +12,7 @@ const AddVehicle = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,12 +21,16 @@ const AddVehicle = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
 
     try {
-      const response = await createVehicle(formData);
+      await createVehicle(formData);
 
-      setMessage("Vehicle added successfully!");
+      setToast({
+        show: true,
+        message: "Vehicle added successfully!",
+        type: "success",
+      });
+
       setFormData({
         brand: "",
         model: "",
@@ -34,10 +39,17 @@ const AddVehicle = () => {
         runKm: "",
       });
 
-      setTimeout(() => setMessage(""), 3000);
+      setTimeout(() => setToast({ show: false }), 2500);
     } catch (error) {
-      setMessage("Error adding vehicle.");
-      console.error(error.response?.data || error);
+      console.error(error);
+
+      setToast({
+        show: true,
+        message: "Error adding vehicle.",
+        type: "error",
+      });
+
+      setTimeout(() => setToast({ show: false }), 2500);
     }
 
     setLoading(false);
@@ -45,13 +57,15 @@ const AddVehicle = () => {
 
   return (
     <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Add New Vehicle</h1>
 
-      {message && (
-        <div className="mb-4 p-3 bg-blue-100 text-blue-700 rounded">
-          {message}
-        </div>
-      )}
+      <Toast
+        show={toast.show}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ show: false })}
+      />
+
+      <h1 className="text-3xl font-bold mb-6">Add New Vehicle</h1>
 
       <form
         onSubmit={handleSubmit}

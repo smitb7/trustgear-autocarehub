@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createGarage } from "../api/garageApi";
+import Toast from "../components/Toast";
 
 const AddGarage = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +10,7 @@ const AddGarage = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,22 +19,33 @@ const AddGarage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
 
     try {
-      const response = await createGarage(formData);
+      await createGarage(formData);
 
-      setMessage("Garage added successfully!");
+      setToast({
+        show: true,
+        message: "Garage added successfully!",
+        type: "success",
+      });
+
       setFormData({
         name: "",
         location: "",
         contactNumber: "",
       });
 
-      setTimeout(() => setMessage(""), 3000);
+      setTimeout(() => setToast({ show: false }), 2500);
     } catch (error) {
-      setMessage("Error adding garage.");
-      console.error(error.response?.data || error);
+      console.error(error);
+
+      setToast({
+        show: true,
+        message: "Error adding garage.",
+        type: "error",
+      });
+
+      setTimeout(() => setToast({ show: false }), 2500);
     }
 
     setLoading(false);
@@ -41,13 +53,15 @@ const AddGarage = () => {
 
   return (
     <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Add New Garage</h1>
 
-      {message && (
-        <div className="mb-4 p-3 bg-blue-100 text-blue-700 rounded">
-          {message}
-        </div>
-      )}
+      <Toast
+        show={toast.show}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ show: false })}
+      />
+
+      <h1 className="text-3xl font-bold mb-6">Add New Garage</h1>
 
       <form
         onSubmit={handleSubmit}
