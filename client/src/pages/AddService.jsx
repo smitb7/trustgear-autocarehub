@@ -23,13 +23,13 @@ const AddService = () => {
     try {
       const response = await createService(formData);
 
-      if (response.data.success) {
-        setMessage("Service added successfully!");
-        setFormData({ serviceName: "", description: "", price: "" });
-      }
+      setMessage("Service added successfully!");
+      setFormData({ serviceName: "", description: "", price: "" });
+
+      setTimeout(() => setMessage(""), 3000);
     } catch (error) {
       setMessage("Error adding service.");
-      console.error(error);
+      console.error(error.response?.data || error);
     }
 
     setLoading(false);
@@ -49,7 +49,6 @@ const AddService = () => {
         onSubmit={handleSubmit}
         className="bg-white shadow-lg rounded-xl p-6 border"
       >
-        {/* Service Name */}
         <div className="mb-4">
           <label className="block text-gray-700 font-medium">Service Name</label>
           <input
@@ -62,7 +61,6 @@ const AddService = () => {
           />
         </div>
 
-        {/* Description */}
         <div className="mb-4">
           <label className="block text-gray-700 font-medium">Description</label>
           <textarea
@@ -75,7 +73,6 @@ const AddService = () => {
           ></textarea>
         </div>
 
-        {/* Price */}
         <div className="mb-4">
           <label className="block text-gray-700 font-medium">Price (₹)</label>
           <input
@@ -88,7 +85,6 @@ const AddService = () => {
           />
         </div>
 
-        {/* Submit */}
         <button
           type="submit"
           disabled={loading}

@@ -23,17 +23,17 @@ const AddGarage = () => {
     try {
       const response = await createGarage(formData);
 
-      if (response.data.success) {
-        setMessage("Garage added successfully!");
-        setFormData({
-          name: "",
-          location: "",
-          contactNumber: "",
-        });
-      }
+      setMessage("Garage added successfully!");
+      setFormData({
+        name: "",
+        location: "",
+        contactNumber: "",
+      });
+
+      setTimeout(() => setMessage(""), 3000);
     } catch (error) {
       setMessage("Error adding garage.");
-      console.error(error);
+      console.error(error.response?.data || error);
     }
 
     setLoading(false);
@@ -53,7 +53,6 @@ const AddGarage = () => {
         onSubmit={handleSubmit}
         className="bg-white shadow-lg rounded-xl p-6 border"
       >
-        {/* Garage Name */}
         <div className="mb-4">
           <label className="block text-gray-700 font-medium">Garage Name</label>
           <input
@@ -66,7 +65,6 @@ const AddGarage = () => {
           />
         </div>
 
-        {/* Location */}
         <div className="mb-4">
           <label className="block text-gray-700 font-medium">Location</label>
           <input
@@ -79,7 +77,6 @@ const AddGarage = () => {
           />
         </div>
 
-        {/* Contact Number */}
         <div className="mb-4">
           <label className="block text-gray-700 font-medium">
             Contact Number
@@ -94,7 +91,6 @@ const AddGarage = () => {
           />
         </div>
 
-        {/* Submit */}
         <button
           type="submit"
           disabled={loading}

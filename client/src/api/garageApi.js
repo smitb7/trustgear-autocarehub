@@ -1,16 +1,11 @@
 import API from "./axios";
 
-// get all garages
-export const getGarages = () => API.get("/garages");
+export const getGarages = () => API.get("/garage");
 
-// get garage by id
-export const getGarageById = (id) => API.get(`/garages/${id}`);
+export const getGarageById = (id) => API.get(`/garage/${id}`);
 
-// create garage
-export const createGarage = (data) => API.post("/garages", data);
+export const createGarage = (data) => API.post("/garage", data);
 
-// update garage
-export const updateGarage = (id, data) => API.put(`/garages/${id}`, data);
+export const updateGarage = (id, data) => API.put(`/garage/${id}`, data);
 
-// delete garage
-export const deleteGarage = (id) => API.delete(`/garages/${id}`);
+export const deleteGarage = (id) => API.delete(`/garage/${id}`);

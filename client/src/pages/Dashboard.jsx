@@ -146,6 +146,7 @@ const Dashboard = () => {
   >
     Add Garage
   </button>
+  
 
 </div>
     </div>

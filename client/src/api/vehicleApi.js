@@ -1,13 +1,11 @@
-import axios from "axios";
+import API from "./axios";
 
-const BASE_URL = "/api/vehicles";
+export const getVehicles = () => API.get("/vehicle");
 
-export const getVehicles = () => axios.get(BASE_URL);
+export const getVehicleById = (id) => API.get(`/vehicle/${id}`);
 
-export const getVehicleById = (id) => axios.get(`${BASE_URL}/${id}`);
+export const createVehicle = (data) => API.post("/vehicle", data);
 
-export const createVehicle = (data) => axios.post(BASE_URL, data);
+export const updateVehicle = (id, data) => API.put(`/vehicle/${id}`, data);
 
-export const updateVehicle = (id, data) => axios.put(`${BASE_URL}/${id}`, data);
-
-export const deleteVehicle = (id) => axios.delete(`${BASE_URL}/${id}`);
+export const deleteVehicle = (id) => API.delete(`/vehicle/${id}`);
