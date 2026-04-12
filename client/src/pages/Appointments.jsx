@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
-import { getAppointments } from "../api/appointmentApi";
-import { Link } from "react-router-dom"; // ✅ ADD THIS
+import {
+  getAppointments,
+  updateAppointment,
+  deleteAppointment,
+} from "../api/appointmentApi";
+import { Link } from "react-router-dom";
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -8,10 +12,9 @@ const Appointments = () => {
   const fetchAppointments = async () => {
     try {
       const res = await getAppointments();
-      const data = res?.data?.data || [];
-      setAppointments(data);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
+      setAppointments(res?.data?.data || []);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -19,9 +22,31 @@ const Appointments = () => {
     fetchAppointments();
   }, []);
 
+  // 🔥 UPDATE STATUS
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await updateAppointment(id, { status: newStatus });
+      fetchAppointments(); // refresh
+    } catch (err) {
+      console.error("Status update error:", err);
+    }
+  };
+
+  // 🔥 DELETE
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure to delete?")) return;
+
+    try {
+      await deleteAppointment(id);
+      fetchAppointments();
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
+  };
+
   return (
     <div className="p-6">
-      {/* 🔥 HEADER + BUTTON */}
+      {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Appointments</h1>
 
@@ -45,51 +70,62 @@ const Appointments = () => {
               <th className="p-3">Date</th>
               <th className="p-3">Pickup</th>
               <th className="p-3">Status</th>
+              <th className="p-3">Actions</th> {/* NEW */}
             </tr>
           </thead>
 
           <tbody>
-            {appointments.length > 0 ? (
-              appointments.map((item) => (
-                <tr key={item._id} className="border-t">
-                  <td className="p-3">
-                    {item.userId?.name || "N/A"}
-                  </td>
+            {appointments.map((item) => (
+              <tr key={item._id} className="border-t">
+                <td className="p-3">{item.userId?.name || "N/A"}</td>
 
-                  <td className="p-3">
-                    {item.vehicleId?.brand} {item.vehicleId?.model}
-                  </td>
+                <td className="p-3">
+                  {item.vehicleId?.brand} {item.vehicleId?.model}
+                </td>
 
-                  <td className="p-3">
-                    {item.serviceId?.serviceName}
-                  </td>
+                <td className="p-3">
+                  {item.serviceId?.serviceName}
+                </td>
 
-                  <td className="p-3">
-                    {item.garageId?.name}
-                  </td>
+                <td className="p-3">
+                  {item.garageId?.name}
+                </td>
 
-                  <td className="p-3">
-                    {new Date(item.appointmentDate).toLocaleDateString()}
-                  </td>
+                <td className="p-3">
+                  {new Date(item.appointmentDate).toLocaleDateString()}
+                </td>
 
-                  <td className="p-3">
-                    {item.pickupRequest ? "Yes" : "No"}
-                  </td>
+                <td className="p-3">
+                  {item.pickupRequest ? "Yes" : "No"}
+                </td>
 
-                  <td className="p-3">
-                    <span className="px-2 py-1 rounded bg-gray-200 text-sm">
-                      {item.status}
-                    </span>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td className="p-4 text-gray-500" colSpan="7">
-                  No appointments found
+                {/* 🔥 STATUS DROPDOWN */}
+                <td className="p-3">
+                  <select
+                    value={item.status}
+                    onChange={(e) =>
+                      handleStatusChange(item._id, e.target.value)
+                    }
+                    className="border rounded px-2 py-1"
+                  >
+                    <option>Pending</option>
+                    <option>Approved</option>
+                    <option>Forwarded</option>
+                    <option>Completed</option>
+                  </select>
+                </td>
+
+                {/* 🔥 DELETE BUTTON */}
+                <td className="p-3">
+                  <button
+                    onClick={() => handleDelete(item._id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>
