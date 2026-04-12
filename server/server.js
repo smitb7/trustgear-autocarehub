@@ -49,7 +49,7 @@ app.use("/vehicle", vehicleRoute)
 //use garageRouter
 app.use("/garage", garageRouter)
 //use appointmentRouter
-app.use("/appointment", appointmentRouter)
+app.use("/appointment", appointmentRouter)      
 //use invoiceRoutes
 app.use("/invoice", invoiceRouter)
 

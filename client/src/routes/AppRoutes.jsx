@@ -8,6 +8,7 @@ import Garages from "../pages/Garages";
 import AddService from "../pages/AddService";
 import AddVehicle from "../pages/AddVehicle";
 import AddGarage from "../pages/AddGarage";
+import AddAppointment from "../pages/AddAppointment";
 
 export default function AppRoutes() {
   return (
@@ -22,6 +23,8 @@ export default function AppRoutes() {
         <Route path="services/add" element={<AddService />} />
         <Route path="vehicles/add" element={<AddVehicle />} />
         <Route path="garages/add" element={<AddGarage />} />
+        <Route path="appointments/add" element={<AddAppointment />} />
+        
       </Route>
     </Routes>
   );
