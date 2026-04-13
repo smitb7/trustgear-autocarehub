@@ -15,7 +15,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
     setLoading(false);
   }, []);
 
-  // 🔄 LOADING STATE
+  //  LOADING STATE
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center text-xl">
@@ -24,21 +24,20 @@ export default function ProtectedRoute({ children, allowedRoles }) {
     );
   }
 
-  // ❌ NOT LOGGED IN
+  //  NOT LOGGED IN
   if (!isAuth) {
     return <Navigate to="/login" replace />;
   }
 
-  // 🔐 ROLE CHECK (IMPORTANT FIX)
+  //  ROLE CHECK (IMPORTANT FIX)
   if (allowedRoles && !allowedRoles.includes(role)) {
-    // 👉 Redirect based on role instead of login
     if (role === "admin") {
       return <Navigate to="/dashboard" replace />;
     } else {
-      return <Navigate to="/user-dashboard" replace />;
+      return <Navigate to="/user" replace />;
     }
   }
 
-  // ✅ ACCESS GRANTED
+  //  ACCESS GRANTED
   return children;
 }

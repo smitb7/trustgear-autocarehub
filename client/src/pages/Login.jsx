@@ -21,7 +21,7 @@ const Login = () => {
 
       const user = res?.data?.data;
 
-      // 🔥 SAFETY CHECK
+      // SAFETY CHECK
       if (!user?.token || !user?.role) {
         setError("Login failed: invalid server response");
         setLoading(false);
@@ -36,7 +36,7 @@ const Login = () => {
       if (user.role === "admin") {
         navigate("/dashboard", { replace: true });
       } else {
-        navigate("/user-dashboard", { replace: true }); // changed
+        navigate("/user", { replace: true });// changed
       }
 
     } catch (err) {

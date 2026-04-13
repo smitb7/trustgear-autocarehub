@@ -14,37 +14,43 @@ import AddGarage from "../pages/AddGarage";
 import AddAppointment from "../pages/AddAppointment";
 
 import Login from "../pages/Login";
+import UserDashboard from "../pages/UserDashboard";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* ✅ PUBLIC */}
+      {/* PUBLIC */}
       <Route path="/login" element={<Login />} />
 
-      {/* ✅ PROTECTED */}
+      {/* ADMIN ROUTES */}
       <Route
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin"]}>
             <MainLayout />
           </ProtectedRoute>
         }
       >
-        {/* COMMON */}
-        <Route index element={<Dashboard />} />
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/appointments" element={<Appointments />} />
+        <Route path="/appointments/add" element={<AddAppointment />} />
+        <Route path="/vehicles" element={<Vehicles />} />
+        <Route path="/vehicles/add" element={<AddVehicle />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/services/add" element={<AddService />} />
+        <Route path="/garages" element={<Garages />} />
+        <Route path="/garages/add" element={<AddGarage />} />
+      </Route>
 
-        {/* ✅ ADMIN ROUTES */}
-        <Route path="appointments" element={<Appointments />} />
-        <Route path="appointments/add" element={<AddAppointment />} />
-
-        <Route path="vehicles" element={<Vehicles />} />
-        <Route path="vehicles/add" element={<AddVehicle />} />
-
-        <Route path="services" element={<Services />} />
-        <Route path="services/add" element={<AddService />} />
-
-        <Route path="garages" element={<Garages />} />
-        <Route path="garages/add" element={<AddGarage />} />
+      {/* USER ROUTES  FIXED */}
+      <Route
+        path="/user"
+        element={
+          <ProtectedRoute allowedRoles={["user"]}>
+            <MainLayout />
+          </ProtectedRoute>
+        }
+      >
+        {/* <Route index element={<UserAppointments />} /> */}
       </Route>
     </Routes>
   );
