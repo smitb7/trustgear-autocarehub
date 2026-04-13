@@ -26,7 +26,7 @@ const appointmentsSchema = new mongoose.Schema({
     pickupRequest : Boolean,
     status : {
         type: String,
-        enum: ["Pending", "Approved", "Forwarded", "Completed"],
+        enum: ["Pending", "Approved", "Forwarded", "Completed", "Cancelled"],
         default: "Pending"
     }
 })

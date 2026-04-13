@@ -18,3 +18,5 @@ export const updateAppointment = (id, data) =>
 // DELETE
 export const deleteAppointment = (id) =>
   API.delete(`/appointment/${id}`);
+
+

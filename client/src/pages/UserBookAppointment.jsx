@@ -18,9 +18,10 @@ const UserBookAppointment = () => {
   const [garages, setGarages] = useState([]);
 
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const [message, setMessage] = useState("");
 
-  //  FETCH DROPDOWN DATA
+  // 🔥 FETCH DROPDOWN DATA
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -32,13 +33,15 @@ const UserBookAppointment = () => {
         setServices(s?.data?.data || []);
         setGarages(g?.data?.data || []);
       } catch (err) {
-        console.error(err);
+        console.error("Dropdown fetch error:", err);
       }
+      setFetchLoading(false);
     };
 
     fetchData();
   }, []);
 
+  // 🔥 HANDLE INPUT CHANGE
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -48,20 +51,19 @@ const UserBookAppointment = () => {
     });
   };
 
+  // 🔥 SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
     try {
-      const userId = localStorage.getItem("userId"); // optional (if stored)
+      const token = localStorage.getItem("token");
 
-      await createAppointment({
-        ...formData,
-        userId, // backend expects this
-      });
+      // ✅ Backend will take userId from token (authMiddleware)
+      await createAppointment(formData, token);
 
-      setMessage("Appointment booked successfully!");
+      setMessage("✅ Appointment booked successfully!");
 
       setFormData({
         vehicleId: "",
@@ -73,12 +75,21 @@ const UserBookAppointment = () => {
 
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {
-      console.error(err);
-      setMessage("Error booking appointment");
+      console.error("Booking error:", err);
+      setMessage("❌ Error booking appointment");
     }
 
     setLoading(false);
   };
+
+  // 🔥 LOADING STATE
+  if (fetchLoading) {
+    return (
+      <div className="p-6 text-center text-lg">
+        Loading form data...
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-xl mx-auto">
@@ -105,11 +116,15 @@ const UserBookAppointment = () => {
             className="w-full p-2 border rounded"
           >
             <option value="">Select Vehicle</option>
-            {vehicles.map((v) => (
-              <option key={v._id} value={v._id}>
-                {v.brand} {v.model}
-              </option>
-            ))}
+            {vehicles.length > 0 ? (
+              vehicles.map((v) => (
+                <option key={v._id} value={v._id}>
+                  {v.brand} {v.model}
+                </option>
+              ))
+            ) : (
+              <option disabled>No vehicles found</option>
+            )}
           </select>
         </div>
 
@@ -124,11 +139,15 @@ const UserBookAppointment = () => {
             className="w-full p-2 border rounded"
           >
             <option value="">Select Service</option>
-            {services.map((s) => (
-              <option key={s._id} value={s._id}>
-                {s.serviceName}
-              </option>
-            ))}
+            {services.length > 0 ? (
+              services.map((s) => (
+                <option key={s._id} value={s._id}>
+                  {s.serviceName}
+                </option>
+              ))
+            ) : (
+              <option disabled>No services found</option>
+            )}
           </select>
         </div>
 
@@ -143,11 +162,15 @@ const UserBookAppointment = () => {
             className="w-full p-2 border rounded"
           >
             <option value="">Select Garage</option>
-            {garages.map((g) => (
-              <option key={g._id} value={g._id}>
-                {g.name}
-              </option>
-            ))}
+            {garages.length > 0 ? (
+              garages.map((g) => (
+                <option key={g._id} value={g._id}>
+                  {g.name}
+                </option>
+              ))
+            ) : (
+              <option disabled>No garages found</option>
+            )}
           </select>
         </div>
 

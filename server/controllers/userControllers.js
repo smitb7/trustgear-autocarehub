@@ -186,91 +186,84 @@ const auth = async(req,res)=>{
 //login
 
 
-const loginUser = async(req,res)=>{
+const loginUser = async (req, res) => {
     try {
-
-    
-        const {
-            email,
-            password
-        } = req.body
-
-        //step.1 (User is found or not ?)
-        const userFound = await User.findOne({
-            email
-        })
-        // if user is not found 
-        if(!userFound){
-            res.status(404).json({
-                message : "user not userFound..!!"
-            })
-        }
-
-        // if found 
-        //step.2 , now check the password 
-
-        const isPasswordCorrect = bcrypt.compareSync(password, userFound.password)
-
-        // if password correct  
-        if(isPasswordCorrect){
-
-
-
-            // json web token 
-            const token = jwt.sign(
-            // first parimeter
-                {
-                id : userFound._id,
-                email : userFound.email,
-            },
-            //  second parimeter (signature- secret)
-            "This-is-super-secret-string-which-can-be-anything",
-            //third parimeter
-            {expiresIn : "2h" }
-        )
-
-
-            res.json({
-
-                message: "logged in successfully..!",
-                data: {
-                    name: userFound.name,
-                    email: userFound.email,
-                    role: userFound.role, 
-                    token
-                    
-                }
-            })
-        }
-
-
-
+      const { email, password } = req.body;
+  
+      // STEP 1: Check user exists
+      const userFound = await User.findOne({ email });
+  
+      if (!userFound) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+  
+      //  STEP 2: Check password
+      const isPasswordCorrect = bcrypt.compareSync(
+        password,
+        userFound.password
+      );
+  
+      if (!isPasswordCorrect) {
+        return res.status(401).json({
+          message: "Invalid password",
+        });
+      }
+  
+      //  STEP 3: Generate token
+      const token = jwt.sign(
+        {
+          id: userFound._id,
+          email: userFound.email,
+          role: userFound.role,
+        },
+        "This-is-super-secret-string-which-can-be-anything",
+        { expiresIn: "2h" }
+      );
+  
+      //  STEP 4: Send response
+      return res.json({
+        message: "logged in successfully..!",
+        data: {
+          name: userFound.name,
+          email: userFound.email,
+          role: userFound.role,
+          token,
+        },
+      });
+  
     } catch (error) {
-        res.status(404).json({
-            message : "invalid Credentials...!"
-        })
+      return res.status(500).json({
+        message: "Server error",
+      });
     }
-}
-
+  };
 
 
 // log OUT 
 
-const logout = async (req,res)=>{
-
-    const authHeaader = req.headers["authorization"] ;
-    const token = authHeader.split(" ")[1] ;
-
-    const newToken = await BlacklistToken.create({
-            token
-    }) 
-
-    res.status(200).json({
-        message : "Logged out successfully..!"
-    })
-
-
-}
+const logout = async (req, res) => {
+    try {
+      const authHeader = req.headers["authorization"];
+  
+      if (!authHeader) {
+        return res.status(401).json({ message: "No token provided" });
+      }
+  
+      const token = authHeader.split(" ")[1];
+  
+      await BlacklistToken.create({ token });
+  
+      res.status(200).json({
+        message: "Logged out successfully..!",
+      });
+    } catch (err) {
+      res.status(500).json({
+        message: "Logout failed",
+      });
+    }
+  };
 
 module.exports = {getUsers, updateUser, getUsersbyId, deleteUserbyId, auth, loginUser, logout}
 

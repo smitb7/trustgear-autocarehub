@@ -24,7 +24,7 @@ const createAppointment = async(req,res)=>{
         
 
         const createappointmentData = await Appointments.create({
-            userId : userId,
+            userId : req.user.id,
             vehicleId : vehicleId,
             serviceId: serviceId,
             garageId : garageId,
@@ -98,54 +98,100 @@ const getappointmentsbyId = async(req,res)=>{
 }
 
 
-const updateAppointment = async(req,res)=>{
+// const updateAppointment = async(req,res)=>{
 
-    try {
+//     try {
 
-        const {
-            id
-        } = req.params 
+//         const {
+//             id
+//         } = req.params 
 
-        const {
-            userId,
-            vehicleId,
-            serviceId,
-            garageId,
-            appointmentDate,
-            pickupRequest,
-            status
-        } = req.body
+//         const {
+//             userId,
+//             vehicleId,
+//             serviceId,
+//             garageId,
+//             appointmentDate,
+//             pickupRequest,
+//             status
+//         } = req.body
 
-        const updateAppointmentData = await Appointments.findByIdAndUpdate(id,
-            {
-            userId,
-            vehicleId,
-            serviceId,
-            garageId,
-            appointmentDate,
-            pickupRequest,
-            status
-            },
-            { new: true }
-        )
-
-
-        res.status(200).json({
-            data : updateAppointmentData,
-            message : "Your Data is updated according to your ID...!"
-        })
+//         const updateAppointmentData = await Appointments.findByIdAndUpdate(id,
+//             {
+//             userId,
+//             vehicleId,
+//             serviceId,
+//             garageId,
+//             appointmentDate,
+//             pickupRequest,
+//             status
+//             },
+//             { new: true }
+//         )
 
 
-    } catch (err) {
+//         res.status(200).json({
+//             data : updateAppointmentData,
+//             message : "Your Data is updated according to your ID...!"
+//         })
 
 
-        res.status(500).send("appointment server Down...!")
+//     } catch (err) {
+
+
+//         res.status(500).send("appointment server Down...!")
         
+//     }
+
+// }
+
+const updateAppointment = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+  
+      const userId = req.user.id;
+      const userRole = req.user.role;
+  
+      const appointment = await Appointments.findById(id);
+  
+      if (!appointment) {
+        return res.status(404).json({
+          message: "Appointment not found",
+        });
+      }
+  
+      // 👤 USER → can ONLY cancel own appointment
+      if (userRole !== "admin") {
+        if (appointment.userId.toString() !== userId) {
+          return res.status(403).json({
+            message: "Not allowed",
+          });
+        }
+  
+        // user can only cancel
+        if (status !== "Cancelled") {
+          return res.status(403).json({
+            message: "Users can only cancel appointments",
+          });
+        }
+      }
+  
+      appointment.status = status;
+      await appointment.save();
+  
+      res.status(200).json({
+        message: "Appointment updated",
+        data: appointment,
+      });
+  
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        message: "Server error",
+      });
     }
-
-}
-
-
+  };
 
 const deleteAppointment = async(req,res)=>{
 

@@ -6,17 +6,20 @@ const API = axios.create({
 
 API.interceptors.request.use((req) => {
   const publicRoutes = [
-    "users/login",
-    "users/sign-up"
+    "/api/users/login",
+    "/api/users/sign-up",
   ];
 
-  // If request URL includes any public route → skip token
-  if (publicRoutes.some((route) => req.url.includes(route))) {
-    return req;
-  }
+  //  FIX: exact match using startsWith
+  const isPublic = publicRoutes.some((route) =>
+    req.url.startsWith(route)
+  );
 
-  // Otherwise attach token
+  if (isPublic) return req;
+
+  // 🔥 attach token for all protected routes
   const token = localStorage.getItem("token");
+
   if (token) {
     req.headers.Authorization = `Bearer ${token}`;
   }
@@ -25,3 +28,6 @@ API.interceptors.request.use((req) => {
 });
 
 export default API;
+
+
+

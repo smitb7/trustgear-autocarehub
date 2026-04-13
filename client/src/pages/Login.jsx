@@ -4,9 +4,21 @@ import { loginUser } from "../api/userApi.js";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "" });
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // 🔥 added
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,77 +26,85 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await loginUser({
-        email: form.email,
-        password: form.password,
-      });
+      const res = await loginUser(form);
 
       const user = res?.data?.data;
 
-      // SAFETY CHECK
-      if (!user?.token || !user?.role) {
-        setError("Login failed: invalid server response");
-        setLoading(false);
+      if (!user?.token) {
+        setError("Invalid server response");
         return;
       }
 
-      // STORE DATA
+      // store auth data
       localStorage.setItem("token", user.token);
       localStorage.setItem("role", user.role);
 
-      //  ROLE-BASED REDIRECT
+      // redirect based on role
       if (user.role === "admin") {
         navigate("/dashboard", { replace: true });
       } else {
-        navigate("/user", { replace: true });// changed
+        navigate("/user", { replace: true });
       }
 
     } catch (err) {
       console.error("Login error:", err);
-      setError("Invalid credentials or server error");
-    }
 
-    setLoading(false);
+      const message =
+        err?.response?.data?.message || "Server error";
+
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
+
         <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
           TrustGear Login
         </h1>
 
         {error && (
-          <p className="text-red-500 text-center mb-4">{error}</p>
+          <p className="text-red-500 text-center mb-4">
+            {error}
+          </p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
+
+          {/* Email */}
           <div>
-            <label className="block mb-1 font-medium">Email</label>
+            <label className="block mb-1 font-medium">
+              Email
+            </label>
             <input
               type="email"
-              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              name="email"
               value={form.email}
-              onChange={(e) =>
-                setForm({ ...form, email: e.target.value })
-              }
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
               required
             />
           </div>
 
+          {/* Password */}
           <div>
-            <label className="block mb-1 font-medium">Password</label>
+            <label className="block mb-1 font-medium">
+              Password
+            </label>
             <input
               type="password"
-              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              name="password"
               value={form.password}
-              onChange={(e) =>
-                setForm({ ...form, password: e.target.value })
-              }
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
               required
             />
           </div>
 
+          {/* Button */}
           <button
             type="submit"
             disabled={loading}
@@ -92,6 +112,7 @@ const Login = () => {
           >
             {loading ? "Logging in..." : "Login"}
           </button>
+
         </form>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAppointments } from "../api/appointmentApi";
+import { getAppointments, updateAppointment } from "../api/appointmentApi";
 import { Link } from "react-router-dom";
 
 const UserAppointments = () => {
@@ -9,8 +9,6 @@ const UserAppointments = () => {
     try {
       const res = await getAppointments();
       const data = res?.data?.data || [];
-
-      // 🔥 OPTIONAL (later filter by userId)
       setAppointments(data);
     } catch (err) {
       console.error(err);
@@ -20,6 +18,16 @@ const UserAppointments = () => {
   useEffect(() => {
     fetchAppointments();
   }, []);
+
+  //  CANCEL FUNCTION
+  const handleCancel = async (id) => {
+    try {
+      await updateAppointment(id, { status: "Cancelled" });
+      fetchAppointments();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -45,6 +53,7 @@ const UserAppointments = () => {
               <th className="p-3">Garage</th>
               <th className="p-3">Date</th>
               <th className="p-3">Status</th>
+              <th className="p-3">Action</th>
             </tr>
           </thead>
 
@@ -68,16 +77,38 @@ const UserAppointments = () => {
                     {new Date(item.appointmentDate).toLocaleDateString()}
                   </td>
 
+                  {/* 🔥 STATUS COLORS */}
                   <td className="p-3">
-                    <span className="px-2 py-1 rounded bg-gray-200 text-sm">
+                    <span
+                      className={`px-2 py-1 rounded text-white text-sm
+                        ${item.status === "Pending" && "bg-yellow-500"}
+                        ${item.status === "Approved" && "bg-blue-500"}
+                        ${item.status === "Forwarded" && "bg-purple-500"}
+                        ${item.status === "Completed" && "bg-green-500"}
+                        ${item.status === "Cancelled" && "bg-red-500"}
+                      `}
+                    >
                       {item.status}
                     </span>
+                  </td>
+
+                  {/* 🔥 CANCEL BUTTON */}
+                  <td className="p-3">
+                    {item.status !== "Cancelled" &&
+                      item.status !== "Completed" && (
+                        <button
+                          onClick={() => handleCancel(item._id)}
+                          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                        >
+                          Cancel
+                        </button>
+                      )}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="p-4 text-gray-500">
+                <td colSpan="6" className="p-4 text-gray-500">
                   No appointments found
                 </td>
               </tr>

@@ -15,6 +15,7 @@ import AddAppointment from "../pages/AddAppointment";
 
 import Login from "../pages/Login";
 import UserDashboard from "../pages/UserDashboard";
+import UserAppointments from "../pages/UserAppointments";
 import UserBookAppointment from "../pages/UserBookAppointment";
 
 
