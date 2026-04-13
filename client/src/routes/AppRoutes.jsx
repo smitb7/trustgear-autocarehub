@@ -18,10 +18,10 @@ import Login from "../pages/Login";
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* PUBLIC ROUTE */}
+      {/* ✅ PUBLIC */}
       <Route path="/login" element={<Login />} />
 
-      {/* PROTECTED ROUTES */}
+      {/* ✅ PROTECTED */}
       <Route
         element={
           <ProtectedRoute>
@@ -29,14 +29,20 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
+        {/* COMMON */}
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
+
+        {/* ✅ ADMIN ROUTES */}
         <Route path="appointments" element={<Appointments />} />
         <Route path="appointments/add" element={<AddAppointment />} />
+
         <Route path="vehicles" element={<Vehicles />} />
         <Route path="vehicles/add" element={<AddVehicle />} />
+
         <Route path="services" element={<Services />} />
         <Route path="services/add" element={<AddService />} />
+
         <Route path="garages" element={<Garages />} />
         <Route path="garages/add" element={<AddGarage />} />
       </Route>

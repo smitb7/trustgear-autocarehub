@@ -232,10 +232,11 @@ const loginUser = async(req,res)=>{
 
             res.json({
 
-                message : "logged in successfully..!",
-                data : {
-                    name : userFound.name,
-                    email : userFound.email,
+                message: "logged in successfully..!",
+                data: {
+                    name: userFound.name,
+                    email: userFound.email,
+                    role: userFound.role, 
                     token
                     
                 }
