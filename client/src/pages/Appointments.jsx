@@ -9,6 +9,10 @@ import { Link } from "react-router-dom";
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
 
+  // 🔍 NEW STATE
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+
   const fetchAppointments = async () => {
     try {
       const res = await getAppointments();
@@ -26,7 +30,7 @@ const Appointments = () => {
   const handleStatusChange = async (id, newStatus) => {
     try {
       await updateAppointment(id, { status: newStatus });
-      fetchAppointments(); // refresh
+      fetchAppointments();
     } catch (err) {
       console.error("Status update error:", err);
     }
@@ -44,6 +48,22 @@ const Appointments = () => {
     }
   };
 
+  // 🔍 + 🎯 FILTER LOGIC
+  const filteredAppointments = appointments.filter((item) => {
+    const text = searchTerm.toLowerCase();
+
+    const matchesSearch =
+      item.userId?.name?.toLowerCase().includes(text) ||
+      item.vehicleId?.brand?.toLowerCase().includes(text) ||
+      item.vehicleId?.model?.toLowerCase().includes(text) ||
+      item.serviceId?.serviceName?.toLowerCase().includes(text);
+
+    const matchesStatus =
+      statusFilter === "All" || item.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <div className="p-6">
       {/* HEADER */}
@@ -58,10 +78,35 @@ const Appointments = () => {
         </Link>
       </div>
 
+      {/* 🔍 SEARCH + 🎯 FILTER */}
+      <div className="flex gap-4 mb-4">
+        {/* Search */}
+        <input
+          type="text"
+          placeholder="Search by customer, vehicle, service..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="p-2 border rounded w-full"
+        />
+
+        {/* Filter */}
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="p-2 border rounded"
+        >
+          <option value="All">All</option>
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Forwarded">Forwarded</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+
       {/* TABLE */}
-      <div className="bg-white shadow rounded-xl overflow-hidden">
+      <div className="bg-white shadow rounded-xl overflow-hidden max-h-[500px] overflow-y-auto">
         <table className="w-full text-left">
-          <thead className="bg-gray-100">
+          <thead className="bg-gray-100 sticky top-0">
             <tr>
               <th className="p-3">Customer</th>
               <th className="p-3">Vehicle</th>
@@ -70,62 +115,66 @@ const Appointments = () => {
               <th className="p-3">Date</th>
               <th className="p-3">Pickup</th>
               <th className="p-3">Status</th>
-              <th className="p-3">Actions</th> {/* NEW */}
+              <th className="p-3">Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            {appointments.map((item) => (
-              <tr key={item._id} className="border-t">
-                <td className="p-3">{item.userId?.name || "N/A"}</td>
+            {filteredAppointments.length > 0 ? (
+              filteredAppointments.map((item) => (
+                <tr key={item._id} className="border-t">
+                  <td className="p-3">{item.userId?.name || "N/A"}</td>
 
-                <td className="p-3">
-                  {item.vehicleId?.brand} {item.vehicleId?.model}
-                </td>
+                  <td className="p-3">
+                    {item.vehicleId?.brand} {item.vehicleId?.model}
+                  </td>
 
-                <td className="p-3">
-                  {item.serviceId?.serviceName}
-                </td>
+                  <td className="p-3">{item.serviceId?.serviceName}</td>
 
-                <td className="p-3">
-                  {item.garageId?.name}
-                </td>
+                  <td className="p-3">{item.garageId?.name}</td>
 
-                <td className="p-3">
-                  {new Date(item.appointmentDate).toLocaleDateString()}
-                </td>
+                  <td className="p-3">
+                    {new Date(item.appointmentDate).toLocaleDateString()}
+                  </td>
 
-                <td className="p-3">
-                  {item.pickupRequest ? "Yes" : "No"}
-                </td>
+                  <td className="p-3">
+                    {item.pickupRequest ? "Yes" : "No"}
+                  </td>
 
-                {/* 🔥 STATUS DROPDOWN */}
-                <td className="p-3">
-                  <select
-                    value={item.status}
-                    onChange={(e) =>
-                      handleStatusChange(item._id, e.target.value)
-                    }
-                    className="border rounded px-2 py-1"
-                  >
-                    <option>Pending</option>
-                    <option>Approved</option>
-                    <option>Forwarded</option>
-                    <option>Completed</option>
-                  </select>
-                </td>
+                  {/* STATUS */}
+                  <td className="p-3">
+                    <select
+                      value={item.status}
+                      onChange={(e) =>
+                        handleStatusChange(item._id, e.target.value)
+                      }
+                      className="border rounded px-2 py-1"
+                    >
+                      <option>Pending</option>
+                      <option>Approved</option>
+                      <option>Forwarded</option>
+                      <option>Completed</option>
+                    </select>
+                  </td>
 
-                {/* 🔥 DELETE BUTTON */}
-                <td className="p-3">
-                  <button
-                    onClick={() => handleDelete(item._id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
+                  {/* DELETE */}
+                  <td className="p-3">
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8" className="p-4 text-center text-gray-500">
+                  No matching appointments found
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
