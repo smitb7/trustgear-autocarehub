@@ -15,6 +15,8 @@ import AddAppointment from "../pages/AddAppointment";
 
 import Login from "../pages/Login";
 import UserDashboard from "../pages/UserDashboard";
+import UserBookAppointment from "../pages/UserBookAppointment";
+
 
 export default function AppRoutes() {
   return (
@@ -42,15 +44,16 @@ export default function AppRoutes() {
       </Route>
 
       {/* USER ROUTES  FIXED */}
+      {/* USER ROUTES */}
       <Route
-        path="/user"
         element={
           <ProtectedRoute allowedRoles={["user"]}>
             <MainLayout />
           </ProtectedRoute>
         }
       >
-        {/* <Route index element={<UserAppointments />} /> */}
+        <Route path="/user" element={<UserAppointments />} />
+        <Route path="/user/book" element={<UserBookAppointment />} />
       </Route>
     </Routes>
   );
