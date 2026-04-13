@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/userApi.js";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ const Login = () => {
       localStorage.setItem("token", user.token);
       localStorage.setItem("role", user.role);
 
+      toast.success("Login successful");
       // redirect based on role
       if (user.role === "admin") {
         navigate("/dashboard", { replace: true });

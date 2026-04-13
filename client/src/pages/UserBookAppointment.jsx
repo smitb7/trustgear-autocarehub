@@ -3,6 +3,8 @@ import { createAppointment } from "../api/appointmentApi";
 import { getVehicles } from "../api/vehicleApi";
 import { getServices } from "../api/serviceApi";
 import { getGarages } from "../api/garageApi";
+import toast from "react-hot-toast";
+
 
 const UserBookAppointment = () => {
   const [formData, setFormData] = useState({
@@ -63,7 +65,7 @@ const UserBookAppointment = () => {
       // ✅ Backend will take userId from token (authMiddleware)
       await createAppointment(formData, token);
 
-      setMessage("✅ Appointment booked successfully!");
+      toast.success("Appointment booked successfully ");
 
       setFormData({
         vehicleId: "",
@@ -76,7 +78,7 @@ const UserBookAppointment = () => {
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {
       console.error("Booking error:", err);
-      setMessage("❌ Error booking appointment");
+      toast.error("Error booking appointment");
     }
 
     setLoading(false);
@@ -95,11 +97,11 @@ const UserBookAppointment = () => {
     <div className="p-6 max-w-xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Book Appointment</h1>
 
-      {message && (
+      {/* {message && (
         <div className="mb-4 p-3 bg-blue-100 text-blue-700 rounded">
           {message}
         </div>
-      )}
+      )} */}
 
       <form
         onSubmit={handleSubmit}
@@ -204,7 +206,7 @@ const UserBookAppointment = () => {
           disabled={loading}
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
-          {loading ? "Booking..." : "Book Appointment"}
+          {loading ? "Booking Appointment..." : "Book Appointment"}
         </button>
       </form>
     </div>
