@@ -28,10 +28,10 @@ const Signup = () => {
     try {
       await registerUser({
         ...form,
-        role: "user", // 🔥 force user role
+        role: "user", //  force user role
       });
 
-      toast.success("Account created successfully 🎉");
+      toast.success("Account created successfully ");
 
       // redirect to login
       navigate("/login");
