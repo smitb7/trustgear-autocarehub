@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
 
-  // 🔍 NEW STATE
+  //  NEW STATE
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
@@ -26,7 +26,7 @@ const Appointments = () => {
     fetchAppointments();
   }, []);
 
-  // 🔥 UPDATE STATUS
+  // UPDATE STATUS
   const handleStatusChange = async (id, newStatus) => {
     try {
       await updateAppointment(id, { status: newStatus });
@@ -36,7 +36,7 @@ const Appointments = () => {
     }
   };
 
-  // 🔥 DELETE
+  // DELETE
   const handleDelete = async (id) => {
     if (!confirm("Are you sure to delete?")) return;
 
@@ -48,7 +48,7 @@ const Appointments = () => {
     }
   };
 
-  // 🔍 + 🎯 FILTER LOGIC
+  // FILTER LOGIC
   const filteredAppointments = appointments.filter((item) => {
     const text = searchTerm.toLowerCase();
 
@@ -78,7 +78,7 @@ const Appointments = () => {
         </Link>
       </div>
 
-      {/* 🔍 SEARCH + 🎯 FILTER */}
+      {/*  SEARCH +  FILTER */}
       <div className="flex gap-4 mb-4">
         {/* Search */}
         <input

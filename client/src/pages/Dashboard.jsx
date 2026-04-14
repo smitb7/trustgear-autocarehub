@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getDashboardStats } from "../api/dashboardApi";
 import { getAppointments } from "../api/appointmentApi";
 
 const Dashboard = () => {
@@ -15,77 +14,91 @@ const Dashboard = () => {
 
   const [recentAppts, setRecentAppts] = useState([]);
 
-  // Fetch dashboard stats
-  const fetchStats = async () => {
-    try {
-      const response = await getDashboardStats();
-
-      const safeData =
-        response?.data?.data ||
-        response?.data || {
-          totalAppointments: 0,
-          pendingAppointments: 0,
-          completedAppointments: 0,
-          totalUsers: 0,
-        };
-
-      setStats(safeData);
-    } catch (error) {
-      console.error("Dashboard stats error:", error);
-    }
-  };
-
-  // Fetch recent appointments
+  // 🔥 Fetch appointments + calculate stats
   const fetchRecentAppointments = async () => {
     try {
       const response = await getAppointments();
-      setRecentAppts(response.data.data || []);
+      const data = response.data.data || [];
+
+      setRecentAppts(data);
+
+      const totalAppointments = data.length;
+
+      const pendingAppointments = data.filter(
+        (item) =>
+          item.status === "Pending" || item.status === "Approved"
+      ).length;
+
+      const completedAppointments = data.filter(
+        (item) => item.status === "Completed"
+      ).length;
+
+      const usersSet = new Set(
+        data.map((item) => item.userId?._id)
+      );
+
+      const totalUsers = usersSet.size;
+
+      setStats({
+        totalAppointments,
+        pendingAppointments,
+        completedAppointments,
+        totalUsers,
+      });
     } catch (err) {
-      console.error("Error fetching recent appointments:", err);
+      console.error("Error fetching appointments:", err);
     }
   };
 
   useEffect(() => {
-    fetchStats();
     fetchRecentAppointments();
   }, []);
 
   return (
     <div className="p-6">
-
       {/* 1 — Stats */}
-      <h1 className="text-3xl font-bold mb-6">Dashboard Overview</h1>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-        {/* Total Appointments */}
-        <div className="p-6 rounded-xl shadow bg-gradient-to-r from-blue-500 to-blue-700 text-white">
+        
+        <div className="p-6 rounded-2xl shadow-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white transform hover:scale-105 transition">
           <p className="text-sm opacity-80">Total Appointments</p>
-          <h2 className="text-4xl font-bold mt-2">{stats.totalAppointments}</h2>
+          <h2 className="text-4xl font-bold mt-2">
+            {stats.totalAppointments}
+          </h2>
+          <p className="text-xs mt-2 opacity-70">All bookings</p>
         </div>
 
-        {/* Pending */}
-        <div className="p-6 rounded-xl shadow bg-gradient-to-r from-yellow-500 to-yellow-700 text-white">
+        <div className="p-6 rounded-2xl shadow-lg bg-gradient-to-r from-yellow-500 to-yellow-700 text-white transform hover:scale-105 transition">
           <p className="text-sm opacity-80">Pending</p>
-          <h2 className="text-4xl font-bold mt-2">{stats.pendingAppointments}</h2>
+          <h2 className="text-4xl font-bold mt-2">
+            {stats.pendingAppointments}
+          </h2>
+          <p className="text-xs mt-2 opacity-70">Awaiting approval</p>
         </div>
 
-        {/* Completed */}
-        <div className="p-6 rounded-xl shadow bg-gradient-to-r from-green-500 to-green-700 text-white">
+        <div className="p-6 rounded-2xl shadow-lg bg-gradient-to-r from-green-500 to-green-700 text-white transform hover:scale-105 transition">
           <p className="text-sm opacity-80">Completed</p>
-          <h2 className="text-4xl font-bold mt-2">{stats.completedAppointments}</h2>
+          <h2 className="text-4xl font-bold mt-2">
+            {stats.completedAppointments}
+          </h2>
+          <p className="text-xs mt-2 opacity-70">Finished services</p>
         </div>
 
-        {/* Total Users */}
-        <div className="p-6 rounded-xl shadow bg-gradient-to-r from-purple-500 to-purple-700 text-white">
+        <div className="p-6 rounded-2xl shadow-lg bg-gradient-to-r from-purple-500 to-purple-700 text-white transform hover:scale-105 transition">
           <p className="text-sm opacity-80">Total Users</p>
-          <h2 className="text-4xl font-bold mt-2">{stats.totalUsers}</h2>
+          <h2 className="text-4xl font-bold mt-2">
+            {stats.totalUsers}
+          </h2>
+          <p className="text-xs mt-2 opacity-70">
+            Registered customers
+          </p>
         </div>
 
       </div>
 
       {/* 2 — Recent Appointments */}
-      <h2 className="text-2xl font-semibold mt-10 mb-4">Recent Appointments</h2>
+      <h2 className="text-2xl font-semibold mt-10 mb-4">
+        Recent Appointments
+      </h2>
 
       <div className="bg-white shadow rounded-xl overflow-hidden">
         <table className="w-full text-left">
@@ -101,13 +114,40 @@ const Dashboard = () => {
           <tbody>
             {recentAppts.length > 0 ? (
               recentAppts.slice(0, 5).map((item) => (
-                <tr key={item._id} className="border-b">
-                  <td className="p-3">{item.userId?.name || "N/A"}</td>
+                <tr
+                  key={item._id}
+                  className="border-b hover:bg-gray-50 transition"
+                >
                   <td className="p-3">
-                    {item.vehicleId?.brand} {item.vehicleId?.model}
+                    {item.userId?.name || "N/A"}
                   </td>
-                  <td className="p-3">{item.serviceId?.serviceName}</td>
-                  <td className="p-3">{item.status}</td>
+
+                  <td className="p-3">
+                    {item.vehicleId?.brand}{" "}
+                    {item.vehicleId?.model}
+                  </td>
+
+                  <td className="p-3">
+                    {item.serviceId?.serviceName}
+                  </td>
+
+                  {/* 🔥 STATUS BADGE */}
+                  <td className="p-3">
+                    <span
+                      className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                        item.status === "Pending"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : item.status === "Approved"
+                          ? "bg-blue-100 text-blue-700"
+                          : item.status === "Completed"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </td>
+
                 </tr>
               ))
             ) : (
@@ -122,33 +162,32 @@ const Dashboard = () => {
       </div>
 
       {/* 3 — Quick Actions */}
-      <h2 className="text-2xl font-semibold mt-10 mb-4">Quick Actions</h2>
+      <h2 className="text-2xl font-semibold mt-10 mb-4">
+        Quick Actions
+      </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <button
+          onClick={() => navigate("/services/add")}
+          className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
+        >
+          Add Service
+        </button>
 
-  <button
-    onClick={() => navigate("/services/add")}
-    className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
-  >
-    Add Service
-  </button>
+        <button
+          onClick={() => navigate("/vehicles/add")}
+          className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
+        >
+          Add Vehicle
+        </button>
 
-  <button
-    onClick={() => navigate("/vehicles/add")}
-    className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
-  >
-    Add Vehicle
-  </button>
-
-  <button
-    onClick={() => navigate("/garages/add")}
-    className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
-  >
-    Add Garage
-  </button>
-  
-
-</div>
+        <button
+          onClick={() => navigate("/garages/add")}
+          className="p-6 bg-white shadow rounded-xl border hover:bg-gray-50 transition"
+        >
+          Add Garage
+        </button>
+      </div>
     </div>
   );
 };

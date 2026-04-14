@@ -37,12 +37,12 @@ const Login = () => {
         return;
       }
 
-      // store auth data
       localStorage.setItem("token", user.token);
       localStorage.setItem("role", user.role);
+      localStorage.setItem("name", user.name);
 
       toast.success("Login successful");
-      // redirect based on role
+
       if (user.role === "admin") {
         navigate("/dashboard", { replace: true });
       } else {
@@ -50,9 +50,7 @@ const Login = () => {
       }
     } catch (err) {
       console.error("Login error:", err);
-
       const message = err?.response?.data?.message || "Server error";
-
       setError(message);
     } finally {
       setLoading(false);
@@ -60,53 +58,80 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
-          TrustGear Login
-        </h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 p-4">
+      
+      {/* CARD */}
+      <div className="relative bg-white/70 backdrop-blur-lg shadow-2xl rounded-2xl p-8 w-full max-w-md border border-gray-200">
 
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        {/* Glow Effect */}
+        <div className="absolute -top-10 -left-10 w-40 h-40 bg-blue-300 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-300 rounded-full blur-3xl opacity-30"></div>
+
+        {/* TITLE */}
+        <h1 className="text-3xl font-extrabold text-center mb-2 text-gray-800">
+          Welcome to TrustGear
+        </h1>
+        <p className="text-center text-gray-500 mb-6 text-sm">
+          Login to continue your journey
+        </p>
+
+        {/* ERROR */}
+        {error && (
+          <p className="text-red-500 text-center mb-4 text-sm font-medium">
+            {error}
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email */}
+
+          {/* EMAIL */}
           <div>
-            <label className="block mb-1 font-medium">Email</label>
+            <label className="block mb-1 text-sm font-semibold text-gray-600">
+              Email
+            </label>
             <input
               type="email"
               name="email"
               value={form.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              placeholder="Enter your email"
+              className="w-full px-4 py-3 border rounded-xl bg-white/80 focus:ring-2 focus:ring-blue-400 outline-none transition shadow-sm"
               required
             />
           </div>
 
-          {/* Password */}
+          {/* PASSWORD */}
           <div>
-            <label className="block mb-1 font-medium">Password</label>
+            <label className="block mb-1 text-sm font-semibold text-gray-600">
+              Password
+            </label>
             <input
               type="password"
               name="password"
               value={form.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              placeholder="Enter your password"
+              className="w-full px-4 py-3 border rounded-xl bg-white/80 focus:ring-2 focus:ring-blue-400 outline-none transition shadow-sm"
               required
             />
           </div>
 
-          {/* Button */}
+          {/* BUTTON */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-2 rounded-lg font-semibold"
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 transition text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
 
+          {/* SIGNUP */}
           <p className="text-center mt-4 text-sm text-gray-600">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-blue-600 hover:underline">
+            <Link
+              to="/signup"
+              className="text-blue-600 font-semibold hover:underline"
+            >
               Sign Up
             </Link>
           </p>

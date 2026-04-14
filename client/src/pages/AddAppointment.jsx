@@ -24,7 +24,7 @@ const AddAppointment = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 🔥 Fetch all dropdown data
+  //  Fetch all dropdown data
   useEffect(() => {
     fetchData();
   }, []);

@@ -1,39 +1,18 @@
-// import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import Login from "./pages/Login";
-// import ProtectedRoute from "./routes/ProtectedRoute";
-// import AppRoutes from "./routes/AppRoutes";
 
-// function App() {
-//   return (
-//     <BrowserRouter>
-//       <Routes>
-//         {/* Public Route */}
-//         <Route path="/login" element={<Login />} />
-
-//         {/* Protected All App Routes */}
-//         <Route
-//           path="/*"
-//           element={
-//             <ProtectedRoute>
-//               <AppRoutes />
-//             </ProtectedRoute>
-//           }
-//         />
-//       </Routes>
-//     </BrowserRouter>
-//   );
-// }
-
-// export default App;
-
-
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
 import AppRoutes from "./routes/AppRoutes";
 
 function App() {
   return (
     <BrowserRouter>
-      <AppRoutes />
+      <Routes>
+        {/* Public Route */}
+        <Route path="/login" element={<Login />} />
+
+        {/* All Routes handled inside AppRoutes */}
+        <Route path="/*" element={<AppRoutes />} />
+      </Routes>
     </BrowserRouter>
   );
 }
