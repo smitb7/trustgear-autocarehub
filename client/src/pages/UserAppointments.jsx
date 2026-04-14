@@ -50,10 +50,8 @@ const UserAppointments = () => {
       <div className="bg-white shadow-md rounded-2xl border h-[70vh] flex flex-col">
         
         {/* 🔥 SCROLL AREA */}
-        <div className="overflow-y-auto flex-1">
-          
-          <table className="w-full text-left">
-            
+        <div className="overflow-auto flex-1">          
+        <table className="min-w-[700px] w-full text-left">            
             {/* 🔥 STICKY HEADER */}
             <thead className="bg-gray-100 sticky top-0 z-10">
               <tr>

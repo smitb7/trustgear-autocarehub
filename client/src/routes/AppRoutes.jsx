@@ -17,6 +17,8 @@ import Login from "../pages/Login";
 import UserDashboard from "../pages/UserDashboard";
 import UserAppointments from "../pages/UserAppointments";
 import UserBookAppointment from "../pages/UserBookAppointment";
+import Signup from "../pages/Signup";
+
 
 
 export default function AppRoutes() {
@@ -24,7 +26,7 @@ export default function AppRoutes() {
     <Routes>
       {/* PUBLIC */}
       <Route path="/login" element={<Login />} />
-
+      <Route path="/signup" element={<Signup />} />
       {/* ADMIN ROUTES */}
       <Route
         element={

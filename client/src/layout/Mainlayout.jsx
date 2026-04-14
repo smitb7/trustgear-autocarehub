@@ -16,7 +16,7 @@ export default function MainLayout() {
         <Navbar />
 
         {/* PAGE CONTENT */}
-        <div className="p-4 flex-1 overflow-hidden">
+        <div className="p-4 flex-1 overflow-auto">
           <Outlet />
         </div>
 
