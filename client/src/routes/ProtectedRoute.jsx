@@ -39,5 +39,5 @@ export default function ProtectedRoute({ children, allowedRoles }) {
   }
 
   //  ACCESS GRANTED
-  return <>children</>;
+  return children;
 }

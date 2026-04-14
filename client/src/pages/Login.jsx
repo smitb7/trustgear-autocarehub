@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/userApi.js";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -105,12 +106,9 @@ const Login = () => {
 
           <p className="text-center mt-4 text-sm text-gray-600">
             Don't have an account?{" "}
-            <span
-              onClick={() => navigate("/signup")}
-              className="text-blue-600 cursor-pointer hover:underline"
-            >
+            <Link to="/signup" className="text-blue-600 hover:underline">
               Sign Up
-            </span>
+            </Link>
           </p>
         </form>
       </div>
