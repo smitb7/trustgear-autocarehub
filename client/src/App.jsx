@@ -1,6 +1,3 @@
-
-
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import AppRoutes from "./routes/AppRoutes";
@@ -10,7 +7,7 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* 🔥 DEFAULT REDIRECT */}
+        {/*  DEFAULT REDIRECT */}
         <Route path="/" element={<Navigate to="/login" replace />} />
 
         {/* PUBLIC */}
