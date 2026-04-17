@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAppointments, updateAppointment } from "../api/appointmentApi";
 import { Link } from "react-router-dom";
+import { Calendar, Trash } from "lucide-react";
 
 const UserAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -49,10 +50,10 @@ const UserAppointments = () => {
       {/* TABLE */}
       <div className="bg-white shadow-md rounded-2xl border h-[70vh] flex flex-col">
         
-        {/* 🔥 SCROLL AREA */}
+        {/*  SCROLL AREA */}
         <div className="overflow-auto flex-1">          
         <table className="min-w-[700px] w-full text-left">            
-            {/* 🔥 STICKY HEADER */}
+            {/*  STICKY HEADER */}
             <thead className="bg-gray-100 sticky top-0 z-10">
               <tr>
                 <th className="p-3">Vehicle</th>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getServices, deleteService } from "../api/serviceApi";
+import { Plus, Trash, Wrench } from "lucide-react";
 
 const Services = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const Services = () => {
   };
 
   return (
-    <div className="p-6">
+<div className="p-4 sm:p-6 space-y-6">
 
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
@@ -60,8 +61,7 @@ const Services = () => {
 
           <table className="min-w-[700px] w-full text-left">
 
-            <thead className="bg-gray-100 border-b">
-              <tr>
+          <thead className="bg-gray-50 border-b text-gray-600 text-sm uppercase">              <tr>
                 <th className="p-3">Service Name</th>
                 <th className="p-3">Price</th>
                 <th className="p-3">Description</th>

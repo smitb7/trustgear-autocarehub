@@ -110,6 +110,7 @@ const AddGarage = () => {
           disabled={loading}
           className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition"
         >
+          
           {loading ? "Saving..." : "Add Garage"}
         </button>
       </form>

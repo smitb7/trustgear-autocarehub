@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getGarages, deleteGarage } from "../api/garageApi";
+import { Plus, Trash, Building } from "lucide-react";
 
 const Garages = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const Garages = () => {
   };
 
   return (
-    <div className="p-6">
+<div className="p-4 sm:p-6 space-y-6">
 
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
@@ -55,12 +56,12 @@ const Garages = () => {
       {/* TABLE */}
       <div className="bg-white shadow rounded-xl overflow-hidden">
 
-        {/* 🔥 RESPONSIVE WRAPPER */}
+        {/*  RESPONSIVE WRAPPER */}
         <div className="overflow-x-auto">
 
           <table className="min-w-[800px] w-full text-left">
 
-            <thead className="bg-gray-100 border-b">
+          <thead className="bg-gray-50 border-b text-gray-600 text-sm uppercase">
               <tr>
                 <th className="p-3">Garage Name</th>
                 <th className="p-3">Location</th>

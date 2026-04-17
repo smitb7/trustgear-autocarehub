@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAppointments } from "../api/appointmentApi";
+import { Calendar, Clock, CheckCircle, Users } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();

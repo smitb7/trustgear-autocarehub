@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createVehicle } from "../api/vehicleApi";
 import Toast from "../components/Toast";
+import { Plus, Trash, Car } from "lucide-react";
 
 const AddVehicle = () => {
   const [formData, setFormData] = useState({

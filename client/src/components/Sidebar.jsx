@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { LayoutDashboard, Car, Wrench, Building, Calendar } from "lucide-react";
 
 const Sidebar = ({ closeSidebar }) => {
   const role = localStorage.getItem("role");

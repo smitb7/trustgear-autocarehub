@@ -5,6 +5,7 @@ import {
   deleteAppointment,
 } from "../api/appointmentApi";
 import { Link } from "react-router-dom";
+// import { Calendar, Trash } from "lucide-react";
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -65,8 +66,7 @@ const Appointments = () => {
   });
 
   return (
-    <div className="p-6">
-      {/* HEADER */}
+<div className="p-4 sm:p-6 space-y-6">      {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Appointments</h1>
 
@@ -106,16 +106,15 @@ const Appointments = () => {
       {/* TABLE */}
       <div className="bg-white shadow rounded-xl overflow-hidden max-h-[500px] overflow-y-auto">
         <table className="w-full text-left">
-          <thead className="bg-gray-100 sticky top-0">
-            <tr>
-              <th className="p-3">Customer</th>
-              <th className="p-3">Vehicle</th>
-              <th className="p-3">Service</th>
-              <th className="p-3">Garage</th>
-              <th className="p-3">Date</th>
-              <th className="p-3">Pickup</th>
-              <th className="p-3">Status</th>
-              <th className="p-3">Actions</th>
+        <thead className="bg-gray-50 border-b text-gray-600 text-sm uppercase">            <tr>
+              <th className="px-4 p-3">Customer</th>
+              <th className="px-4 p-3">Vehicle</th>
+              <th className="px-4 p-3">Service</th>
+              <th className="px-4 p-3">Garage</th>
+              <th className="px-4 p-3">Date</th>
+              <th className="px-4 p-3">Pickup</th>
+              <th className="px-4 p-3">Status</th>
+              <th className="px-4 p-3">Actions</th>
             </tr>
           </thead>
 

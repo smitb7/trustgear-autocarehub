@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getVehicles, deleteVehicle } from "../api/vehicleApi";
+import { Plus, Trash, Car } from "lucide-react";
 
 const Vehicles = () => {
   const navigate = useNavigate();
@@ -8,7 +9,7 @@ const Vehicles = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // 🔥 Fetch Vehicles
+  //  Fetch Vehicles
   const fetchVehicles = async () => {
     try {
       setLoading(true);
@@ -25,7 +26,7 @@ const Vehicles = () => {
     fetchVehicles();
   }, []);
 
-  // 🔥 Delete Vehicle
+  //  Delete Vehicle
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this vehicle?")) return;
 
@@ -38,8 +39,7 @@ const Vehicles = () => {
   };
 
   return (
-    <div className="p-6">
-
+<div className="p-4 sm:p-6 space-y-6">
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Vehicles</h1>
@@ -55,13 +55,12 @@ const Vehicles = () => {
       {/* TABLE */}
       <div className="bg-white shadow rounded-xl overflow-hidden">
 
-        {/* 🔥 RESPONSIVE WRAPPER */}
+        {/*  RESPONSIVE WRAPPER */}
         <div className="overflow-x-auto">
 
           <table className="min-w-[700px] w-full text-left">
 
-            <thead className="bg-gray-100 border-b">
-              <tr>
+          <thead className="bg-gray-50 border-b text-gray-600 text-sm uppercase">              <tr>
                 <th className="p-3">Brand</th>
                 <th className="p-3">Model</th>
                 <th className="p-3">Year</th>
