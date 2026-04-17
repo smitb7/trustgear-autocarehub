@@ -14,7 +14,7 @@ const Dashboard = () => {
 
   const [recentAppts, setRecentAppts] = useState([]);
 
-  // 🔥 Fetch appointments + calculate stats
+  // Fetch appointments + calculate stats
   const fetchRecentAppointments = async () => {
     try {
       const response = await getAppointments();
@@ -101,6 +101,7 @@ const Dashboard = () => {
       </h2>
 
       <div className="bg-white shadow rounded-xl overflow-hidden">
+      
         <table className="w-full text-left">
           <thead className="bg-gray-100 border-b">
             <tr>
@@ -131,7 +132,7 @@ const Dashboard = () => {
                     {item.serviceId?.serviceName}
                   </td>
 
-                  {/* 🔥 STATUS BADGE */}
+                  {/*  STATUS BADGE */}
                   <td className="p-3">
                     <span
                       className={`px-3 py-1 text-xs font-semibold rounded-full ${

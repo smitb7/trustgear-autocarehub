@@ -4,14 +4,14 @@ import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
   return (
-    <div className="flex h-screen overflow-hidden">
-      
+  <div className="flex h-screen overflow-hidden">
+
+
       {/* SIDEBAR */}
       <Sidebar />
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col ml-64">
-        
+      <div className="flex-1 flex flex-col ml-0 md:ml-64">        
         {/* NAVBAR */}
         <Navbar />
 

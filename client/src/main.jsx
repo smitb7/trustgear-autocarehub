@@ -6,7 +6,7 @@ import { Toaster } from "react-hot-toast";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <>
-    <App />,
+    <App />
     <Toaster position="top-right" />
   </>
 );

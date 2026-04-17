@@ -3,7 +3,9 @@
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+
 const Navbar = () => {
+  
   const navigate = useNavigate();
 
   const name = localStorage.getItem("name");
