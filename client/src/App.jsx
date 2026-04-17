@@ -1,5 +1,7 @@
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import AppRoutes from "./routes/AppRoutes";
 
@@ -7,11 +9,16 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Route */}
+
+        {/* 🔥 DEFAULT REDIRECT */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* PUBLIC */}
         <Route path="/login" element={<Login />} />
 
-        {/* All Routes handled inside AppRoutes */}
+        {/* ALL APP ROUTES */}
         <Route path="/*" element={<AppRoutes />} />
+
       </Routes>
     </BrowserRouter>
   );

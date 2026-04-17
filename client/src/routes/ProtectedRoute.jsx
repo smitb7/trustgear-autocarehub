@@ -29,7 +29,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
     return <Navigate to="/login" replace />;
   }
 
-  //  ROLE CHECK (IMPORTANT FIX)
+  //  ROLE CHECK (IMPORTANT FIX ) // RBAC
   if (allowedRoles && !allowedRoles.includes(role)) {
     if (role === "admin") {
       return <Navigate to="/dashboard" replace />;
