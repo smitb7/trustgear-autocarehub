@@ -15,7 +15,9 @@ app.use(cors({
   })); 
 
   
+// razorpay 
 
+const paymentRoutes = require("./routes/paymentRoutes");
 //import user Router 
 const { usersRouter } = require("./routs/userRoutes");
 //import serviceRouter
@@ -52,6 +54,9 @@ app.use("/garage", garageRouter)
 app.use("/appointment", appointmentRouter)      
 //use invoiceRoutes
 app.use("/invoice", invoiceRouter)
+//payment 
+app.use("/payments", paymentRoutes);
+
 
 
 app.listen(8080, ()=>{
