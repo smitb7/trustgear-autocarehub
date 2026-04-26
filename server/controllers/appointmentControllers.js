@@ -146,52 +146,119 @@ const getappointmentsbyId = async(req,res)=>{
 // }
 
 const updateAppointment = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { status } = req.body;
-  
-      const userId = req.user.id;
-      const userRole = req.user.role;
-  
-      const appointment = await Appointments.findById(id);
-  
-      if (!appointment) {
-        return res.status(404).json({
-          message: "Appointment not found",
-        });
-      }
-  
-      // 👤 USER → can ONLY cancel own appointment
-      if (userRole !== "admin") {
-        if (appointment.userId.toString() !== userId) {
-          return res.status(403).json({
-            message: "Not allowed",
-          });
-        }
-  
-        // user can only cancel
-        if (status !== "Cancelled") {
-          return res.status(403).json({
-            message: "Users can only cancel appointments",
-          });
-        }
-      }
-  
-      appointment.status = status;
-      await appointment.save();
-  
-      res.status(200).json({
-        message: "Appointment updated",
-        data: appointment,
-      });
-  
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        message: "Server error",
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    // ✅ SAFE CHECK
+    if (!req.user) {
+      return res.status(401).json({
+        message: "Unauthorized - No user found",
       });
     }
-  };
+
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    const appointment = await Appointments.findById(id);
+
+    if (!appointment) {
+      return res.status(404).json({
+        message: "Appointment not found",
+      });
+    }
+
+    // ✅ EXTRA SAFETY (this was your crash line)
+    if (!appointment.userId) {
+      return res.status(400).json({
+        message: "Appointment has no userId",
+      });
+    }
+
+    // 👤 USER → can ONLY cancel own appointment
+    if (userRole !== "admin") {
+      if (appointment.userId.toString() !== userId) {
+        return res.status(403).json({
+          message: "Not allowed",
+        });
+      }
+
+      if (status !== "Cancelled") {
+        return res.status(403).json({
+          message: "Users can only cancel appointments",
+        });
+      }
+    }
+
+    appointment.status = status;
+    await appointment.save();
+
+    res.status(200).json({
+      message: "Appointment updated",
+      data: appointment,
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
+
+
+
+
+
+
+// const updateAppointment = async (req, res) => {
+//     try {
+//       const { id } = req.params;
+//       const { status } = req.body;
+  
+//       const userId = req.user.id;
+//       const userRole = req.user.role;
+  
+//       const appointment = await Appointments.findById(id);
+  
+//       if (!appointment) {
+//         return res.status(404).json({
+//           message: "Appointment not found",
+//         });
+//       }
+  
+//       // 👤 USER → can ONLY cancel own appointment
+//       if (userRole !== "admin") {
+//         if (appointment.userId.toString() !== userId) {
+//           return res.status(403).json({
+//             message: "Not allowed",
+//           });
+//         }
+  
+//         // user can only cancel
+//         if (status !== "Cancelled") {
+//           return res.status(403).json({
+//             message: "Users can only cancel appointments",
+//           });
+//         }
+//       }
+  
+//       appointment.status = status;
+//       await appointment.save();
+  
+//       res.status(200).json({
+//         message: "Appointment updated",
+//         data: appointment,
+//       });
+  
+//     } catch (err) {
+//       console.log(err);
+//       res.status(500).json({
+//         message: "Server error",
+//       });
+//     }
+//   };
 
 const deleteAppointment = async(req,res)=>{
 

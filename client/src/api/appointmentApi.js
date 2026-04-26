@@ -1,5 +1,6 @@
 import API from "./axios";
 
+
 // GET all appointments
 export const getAppointments = () => API.get("/appointment");
 
