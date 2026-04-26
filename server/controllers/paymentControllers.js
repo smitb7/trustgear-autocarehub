@@ -9,7 +9,7 @@
 //   key_secret: process.env.RAZORPAY_KEY_SECRET,
 // });
 
-// // 🔥 CREATE ORDER (LIKE createAppointment)
+// //  CREATE ORDER (LIKE createAppointment)
 // const createPaymentOrder = async (req, res) => {
 //   try {
 //     const { appointmentId, amount } = req.body;
@@ -39,7 +39,7 @@
 //   }
 // };
 
-// // 🔥 VERIFY PAYMENT (LIKE updateAppointment)
+// // VERIFY PAYMENT (LIKE updateAppointment)
 // const verifyPayment = async (req, res) => {
 //   try {
 //     const { orderId, paymentId, appointmentId } = req.body;
