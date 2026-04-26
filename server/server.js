@@ -5,7 +5,7 @@ const cors = require("cors")
 
 //json
 app.use(express.json());
-
+require("dotenv").config();
 
 //front connectionc
 app.use(cors({
@@ -16,8 +16,7 @@ app.use(cors({
 
   
 // razorpay 
-
-const paymentRoutes = require("./routes/paymentRoutes");
+const paymentRoutes = require("./routs/paymentRoutes");
 //import user Router 
 const { usersRouter } = require("./routs/userRoutes");
 //import serviceRouter
@@ -56,7 +55,6 @@ app.use("/appointment", appointmentRouter)
 app.use("/invoice", invoiceRouter)
 //payment 
 app.use("/payments", paymentRoutes);
-
 
 
 app.listen(8080, ()=>{
