@@ -150,7 +150,7 @@ const updateAppointment = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    // ✅ SAFE CHECK
+    // ✅SAFE CHECK
     if (!req.user) {
       return res.status(401).json({
         message: "Unauthorized - No user found",
@@ -168,7 +168,7 @@ const updateAppointment = async (req, res) => {
       });
     }
 
-    // ✅ EXTRA SAFETY (this was your crash line)
+    //  EXTRA SAFETY (this was your crash line)
     if (!appointment.userId) {
       return res.status(400).json({
         message: "Appointment has no userId",

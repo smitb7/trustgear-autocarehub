@@ -23,7 +23,7 @@ const UserBookAppointment = () => {
   const [fetchLoading, setFetchLoading] = useState(true);
   const [message, setMessage] = useState("");
 
-  // 🔥 FETCH DROPDOWN DATA
+  // FETCH DROPDOWN DATA
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,7 +43,7 @@ const UserBookAppointment = () => {
     fetchData();
   }, []);
 
-  // 🔥 HANDLE INPUT CHANGE
+  // HANDLE INPUT CHANGE
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -53,7 +53,7 @@ const UserBookAppointment = () => {
     });
   };
 
-  // 🔥 SUBMIT
+  //  SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -62,7 +62,7 @@ const UserBookAppointment = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // ✅ Backend will take userId from token (authMiddleware)
+      //  Backend will take userId from token (authMiddleware)
       await createAppointment(formData, token);
 
       toast.success("Appointment booked successfully ");
@@ -84,7 +84,7 @@ const UserBookAppointment = () => {
     setLoading(false);
   };
 
-  // 🔥 LOADING STATE
+  //  LOADING STATE
   if (fetchLoading) {
     return (
       <div className="p-6 text-center text-lg">

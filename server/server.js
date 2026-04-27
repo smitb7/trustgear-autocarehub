@@ -8,7 +8,7 @@ const cors = require("cors")
 app.use(express.json());
 
 
-//front connectionc
+//frontend connection
 app.use(cors({
     origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -62,6 +62,6 @@ app.listen(8080, ()=>{
     
     console.log ("Your server is running on Localhost:8080");
     dbconnect()  // so that we will know if there's an problem in connection 
-
+  
 })
 

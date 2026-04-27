@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAppointments, updateAppointment } from "../api/appointmentApi";
+import { createOrder, verifyPayment } from "../api/paymentApi";
 import { Link } from "react-router-dom";
-import { Calendar, Trash } from "lucide-react";
 
 const UserAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -21,6 +21,59 @@ const UserAppointments = () => {
   useEffect(() => {
     fetchAppointments();
   }, []);
+
+  //  PAYMENT FUNCTION
+  const handlePayment = async (appointmentId) => {
+    try {
+      const amount = 500; // make dynamic later
+
+      const { data } = await createOrder({
+        appointmentId,
+        amount,
+      });
+
+      const order = data?.data?.order;
+
+      if (!order) {
+        console.error("Order not created");
+        return;
+      }
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY,
+        amount: order.amount,
+        currency: "INR",
+        name: "AutoCareHub",
+        description: "Service Payment",
+        order_id: order.id,
+
+        handler: async function (response) {
+          try {
+            await verifyPayment({
+              orderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              appointmentId,
+            });
+
+            alert("Payment successful");
+            fetchAppointments();
+          } catch (err) {
+            console.error("Verification error:", err);
+          }
+        },
+
+        theme: {
+          color: "#2563eb",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error("Payment error:", err);
+    }
+  };
 
   // CANCEL FUNCTION
   const handleCancel = async (id) => {
@@ -49,11 +102,8 @@ const UserAppointments = () => {
 
       {/* TABLE */}
       <div className="bg-white shadow-md rounded-2xl border h-[70vh] flex flex-col">
-        
-        {/*  SCROLL AREA */}
-        <div className="overflow-auto flex-1">          
-        <table className="min-w-[700px] w-full text-left">            
-            {/*  STICKY HEADER */}
+        <div className="overflow-auto flex-1">
+          <table className="min-w-[700px] w-full text-left">
             <thead className="bg-gray-100 sticky top-0 z-10">
               <tr>
                 <th className="p-3">Vehicle</th>
@@ -109,14 +159,23 @@ const UserAppointments = () => {
                       </span>
                     </td>
 
-                    {/* CANCEL BUTTON */}
-                    <td className="p-3">
+                    {/* ACTION BUTTONS */}
+                    <td className="p-3 space-x-2">
+                      {/*  PAY BUTTON (only when Approved) */}
+                      {item.status === "Approved" && (
+                        <button
+                          onClick={() => handlePayment(item._id)}
+                          className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                        >
+                          Pay
+                        </button>
+                      )}
+
+                      {/* CANCEL */}
                       {item.status !== "Cancelled" &&
                         item.status !== "Completed" && (
                           <button
-                            onClick={() =>
-                              handleCancel(item._id)
-                            }
+                            onClick={() => handleCancel(item._id)}
                             className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                           >
                             Cancel
@@ -140,7 +199,6 @@ const UserAppointments = () => {
                 </tr>
               )}
             </tbody>
-
           </table>
         </div>
       </div>
