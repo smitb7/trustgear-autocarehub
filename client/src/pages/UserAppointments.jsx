@@ -23,22 +23,73 @@ const UserAppointments = () => {
   }, []);
 
   //  PAYMENT FUNCTION
-  const handlePayment = async (appointmentId) => {
-    try {
-      const amount = 500; // make dynamic later
+  // const handlePayment = async (appointmentId) => {
+  //   try {
+  //     const amount = 500; // make dynamic later
 
+  //     const { data } = await createOrder({
+  //       appointmentId,
+  //       amount,
+  //     });
+
+  //     const order = data?.data?.order;
+
+  //     if (!order) {
+  //       console.error("Order not created");
+  //       return;
+  //     }
+
+  //     const options = {
+  //       key: import.meta.env.VITE_RAZORPAY_KEY,
+  //       amount: order.amount,
+  //       currency: "INR",
+  //       name: "AutoCareHub",
+  //       description: "Service Payment",
+  //       order_id: order.id,
+
+  //       handler: async function (response) {
+  //         try {
+  //           await verifyPayment({
+  //             orderId: response.razorpay_order_id,
+  //             paymentId: response.razorpay_payment_id,
+  //             razorpay_signature: response.razorpay_signature,
+  //             appointmentId,
+  //           });
+
+  //           alert("Payment successful");
+  //           fetchAppointments();
+  //         } catch (err) {
+  //           console.error("Verification error:", err);
+  //         }
+  //       },
+
+  //       theme: {
+  //         color: "#2563eb",
+  //       },
+  //     };
+
+  //     const rzp = new window.Razorpay(options);
+  //     rzp.open();
+  //   } catch (err) {
+  //     console.error("Payment error:", err);
+  //   }
+  // };
+
+  // for dynamic payment 
+  const handlePayment = async (appointmentId, amount) => {
+    try {
+      if (!amount) {
+        alert("Price not found");
+        return;
+      }
+  
       const { data } = await createOrder({
         appointmentId,
         amount,
       });
-
+  
       const order = data?.data?.order;
-
-      if (!order) {
-        console.error("Order not created");
-        return;
-      }
-
+  
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY,
         amount: order.amount,
@@ -46,34 +97,32 @@ const UserAppointments = () => {
         name: "AutoCareHub",
         description: "Service Payment",
         order_id: order.id,
-
+  
         handler: async function (response) {
-          try {
-            await verifyPayment({
-              orderId: response.razorpay_order_id,
-              paymentId: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              appointmentId,
-            });
-
-            alert("Payment successful");
-            fetchAppointments();
-          } catch (err) {
-            console.error("Verification error:", err);
-          }
-        },
-
-        theme: {
-          color: "#2563eb",
+          await verifyPayment({
+            orderId: response.razorpay_order_id,
+            paymentId: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            appointmentId,
+          });
+  
+          alert("Payment successful");
+          fetchAppointments();
         },
       };
-
+  
       const rzp = new window.Razorpay(options);
       rzp.open();
+  
     } catch (err) {
-      console.error("Payment error:", err);
+      console.error(err);
     }
   };
+
+
+
+
+
 
   // CANCEL FUNCTION
   const handleCancel = async (id) => {
@@ -164,7 +213,8 @@ const UserAppointments = () => {
                       {/*  PAY BUTTON (only when Approved) */}
                       {item.status === "Approved" && (
                         <button
-                          onClick={() => handlePayment(item._id)}
+                         // for dynamic payment 
+                          onClick={() => handlePayment(item._id, item.servicePrice || item.serviceId?.price)}
                           className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
                         >
                           Pay

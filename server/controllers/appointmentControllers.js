@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const Appointments = require('../models/appointmentsSchema')
-
+const Service = require("../models/serviceSchema");
 
 
 
@@ -21,7 +21,11 @@ const createAppointment = async(req,res)=>{
             pickupRequest,
             status
         } = req.body
-        
+
+        // for dynamic payment 
+        // FETCH SERVICE PRICE
+        const service = await Service.findById(serviceId);
+
 
         const createappointmentData = await Appointments.create({
             userId : req.user.id,
@@ -30,7 +34,9 @@ const createAppointment = async(req,res)=>{
             garageId : garageId,
             appointmentDate : appointmentDate,
             pickupRequest : pickupRequest,
-            status : status      
+            status : status,
+             // ✅ STORE PRICE
+             servicePrice: service?.price      
         })
 
 
@@ -57,7 +63,7 @@ const getallappointmentData = async (req, res) => {
       const appointments = await Appointments.find()
         .populate("userId", "name email")
         .populate("vehicleId", "model brand")
-        .populate("serviceId", "serviceName")
+        .populate("serviceId", "serviceName price")
         .populate("garageId", "name");
   
       res.status(200).json({

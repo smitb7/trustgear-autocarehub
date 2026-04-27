@@ -3,40 +3,71 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const User = require("../models/serviceSchema")
+const Service = require("../models/serviceSchema");
 
 // 1. addService (create a service in DB through to the API)
 
-const createService = async (req,res)=>{
+// const createService = async (req,res)=>{
 
-    try {
+//     try {
         
-        const {
+//         const {
+//             serviceName,
+//             description,
+//             price
+//         } = req.body
+
+//         const insertServicedata = await User.insertOne(
+//             {
+//                 serviceName : serviceName,
+//                 description : description,
+//                 price : price
+//             }
+//         )
+
+//         res.status(201).json({
+//             data : insertServicedata,
+//             message : "Your Data is added successfully...!"
+//         })
+
+
+
+//     } catch (err) {
+        
+//         res.status(500).send("Server Down...!")
+//     }
+
+// }
+
+// for dynamic payment 
+
+const createService = async (req,res)=>{
+    try {
+        const { serviceName, description, price } = req.body
+
+        const insertServicedata = await Service.create({
             serviceName,
             description,
             price
-        } = req.body
-
-        const insertServicedata = await User.insertOne(
-            {
-                serviceName : serviceName,
-                description : description,
-                price : price
-            }
-        )
+        })
 
         res.status(201).json({
             data : insertServicedata,
             message : "Your Data is added successfully...!"
         })
 
-
-
     } catch (err) {
-        
         res.status(500).send("Server Down...!")
     }
-
 }
+
+
+
+
+
+
+
+
 
 // now we will get all the services
 

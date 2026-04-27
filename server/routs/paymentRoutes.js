@@ -3,7 +3,7 @@ const express = require("express");
 const {
   createPaymentOrder,
   verifyPayment,
-} = require("../controllers/paymentControllers");
+} = require("../controllers/paymentControllers"); // ✅ correct file
 
 const authMiddleware = require("../middlewares/authMiddleware");
 

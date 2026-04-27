@@ -24,6 +24,11 @@ const appointmentsSchema = new mongoose.Schema({
     }, 
     appointmentDate : Date,
     pickupRequest : Boolean,
+
+    // NEW FIELD (IMPORTANT for dynamic payment )
+    servicePrice: {
+        type: Number,
+    },
     status : {
         type: String,
         enum: ["Pending", "Approved", "Forwarded", "Completed", "Cancelled"],
