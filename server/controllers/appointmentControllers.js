@@ -1,108 +1,100 @@
-const express = require('express')
-const mongoose = require('mongoose')
+const express = require("express");
+const mongoose = require("mongoose");
 
-const Appointments = require('../models/appointmentsSchema')
+const Appointments = require("../models/appointmentsSchema");
 const Service = require("../models/serviceSchema");
 
+// ctreate API for appointments
 
+const createAppointment = async (req, res) => {
+  try {
+    const {
+      userId,
+      vehicleId,
+      serviceId,
+      garageId,
+      appointmentDate,
+      pickupRequest,
+      status,
+    } = req.body;
 
-// ctreate API for appointments 
+    // for dynamic payment
+    // FETCH SERVICE PRICE
+    const service = await Service.findById(serviceId);
 
+    const createappointmentData = await Appointments.create({
+      userId: req.user.id,
+      vehicleId: vehicleId,
+      serviceId: serviceId,
+      garageId: garageId,
+      appointmentDate: appointmentDate,
+      pickupRequest: pickupRequest,
+      status: status,
+      // ✅ STORE PRICE
+      servicePrice: service?.price,
+    });
 
-const createAppointment = async(req,res)=>{
-
-    try {
-        const {
-            userId,
-            vehicleId,
-            serviceId,
-            garageId,
-            appointmentDate,
-            pickupRequest,
-            status
-        } = req.body
-
-        // for dynamic payment 
-        // FETCH SERVICE PRICE
-        const service = await Service.findById(serviceId);
-
-
-        const createappointmentData = await Appointments.create({
-            userId : req.user.id,
-            vehicleId : vehicleId,
-            serviceId: serviceId,
-            garageId : garageId,
-            appointmentDate : appointmentDate,
-            pickupRequest : pickupRequest,
-            status : status,
-             // ✅ STORE PRICE
-             servicePrice: service?.price      
-        })
-
-
-        res.status(201).send ({
-            data : createappointmentData,
-            message : "Your Data has been created"
-        })
-    } catch (err) { 
-        console.log(err)
-        res.status(500).send("appointment server Down...!")
-        
-    }
-
-}
-
-
-
-
+    res.status(201).send({
+      data: createappointmentData,
+      message: "Your Data has been created",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("appointment server Down...!");
+  }
+};
 
 // now to get All appointments with the use of read(get)
 
 const getallappointmentData = async (req, res) => {
-    try {
-      const appointments = await Appointments.find()
-        .populate("userId", "name email")
-        .populate("vehicleId", "model brand")
-        .populate("serviceId", "serviceName price")
-        .populate("garageId", "name");
-  
-      res.status(200).json({
-        data: appointments,
-        message: "Appointments fetched successfully",
-      });
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ message: "Server error" });
+  try {
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    let query = {};
+
+    // 👤 USER → only own appointments
+    if (userRole !== "admin") {
+      query.userId = userId;
     }
-  };
 
-// Get appointments by ID 
-
-const getappointmentsbyId = async(req,res)=>{
-
- try {
-
-    const {
-        id
-    } = req.params
-
-
-    const getdatabyId = await Appointments.findById(id);
+    const appointments = await Appointments.find(query)
+      .populate("userId", "name email")
+      .populate("vehicleId", "model brand")
+      .populate("serviceId", "serviceName price")
+      .populate("garageId", "name")
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
-        data : getdatabyId,
-        message : "This is your data according to the ID..!"
-    })
+      data: appointments,
+      message: "Appointments fetched successfully",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
+// Get appointments by ID
 
- } catch (err) {
-    
-    res.status(500).send("appointment server Down...!")
- }
+const getappointmentsbyId = async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    const getdatabyId = await Appointments.findById(id)
 
-}
+      .populate("serviceId")
+      .populate("garageId")
+      .populate("userId");
 
+    res.status(200).json({
+      data: getdatabyId,
+      message: "This is your data according to the ID..!",
+    });
+  } catch (err) {
+    res.status(500).send("appointment server Down...!");
+  }
+};
 
 // const updateAppointment = async(req,res)=>{
 
@@ -110,7 +102,7 @@ const getappointmentsbyId = async(req,res)=>{
 
 //         const {
 //             id
-//         } = req.params 
+//         } = req.params
 
 //         const {
 //             userId,
@@ -135,18 +127,15 @@ const getappointmentsbyId = async(req,res)=>{
 //             { new: true }
 //         )
 
-
 //         res.status(200).json({
 //             data : updateAppointmentData,
 //             message : "Your Data is updated according to your ID...!"
 //         })
 
-
 //     } catch (err) {
 
-
 //         res.status(500).send("appointment server Down...!")
-        
+
 //     }
 
 // }
@@ -181,7 +170,7 @@ const updateAppointment = async (req, res) => {
       });
     }
 
-    // 👤 USER → can ONLY cancel own appointment
+    // USER → can ONLY cancel own appointment
     if (userRole !== "admin") {
       if (appointment.userId.toString() !== userId) {
         return res.status(403).json({
@@ -203,7 +192,6 @@ const updateAppointment = async (req, res) => {
       message: "Appointment updated",
       data: appointment,
     });
-
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -212,36 +200,30 @@ const updateAppointment = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
 // const updateAppointment = async (req, res) => {
 //     try {
 //       const { id } = req.params;
 //       const { status } = req.body;
-  
+
 //       const userId = req.user.id;
 //       const userRole = req.user.role;
-  
+
 //       const appointment = await Appointments.findById(id);
-  
+
 //       if (!appointment) {
 //         return res.status(404).json({
 //           message: "Appointment not found",
 //         });
 //       }
-  
-//       // 👤 USER → can ONLY cancel own appointment
+
+//       //  USER → can ONLY cancel own appointment
 //       if (userRole !== "admin") {
 //         if (appointment.userId.toString() !== userId) {
 //           return res.status(403).json({
 //             message: "Not allowed",
 //           });
 //         }
-  
+
 //         // user can only cancel
 //         if (status !== "Cancelled") {
 //           return res.status(403).json({
@@ -249,15 +231,15 @@ const updateAppointment = async (req, res) => {
 //           });
 //         }
 //       }
-  
+
 //       appointment.status = status;
 //       await appointment.save();
-  
+
 //       res.status(200).json({
 //         message: "Appointment updated",
 //         data: appointment,
 //       });
-  
+
 //     } catch (err) {
 //       console.log(err);
 //       res.status(500).json({
@@ -266,33 +248,25 @@ const updateAppointment = async (req, res) => {
 //     }
 //   };
 
-const deleteAppointment = async(req,res)=>{
+const deleteAppointment = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-   try {
-
-    const {
-        id
-    } = req.params
-
-   
-
-
-    const deleteAppointmentData = await Appointments.findByIdAndDelete(id)
-
+    const deleteAppointmentData = await Appointments.findByIdAndDelete(id);
 
     res.status(200).json({
-        data : deleteAppointmentData,
-        message  : "Your Data is Deleted according to your id...!"
-    })
+      data: deleteAppointmentData,
+      message: "Your Data is Deleted according to your id...!",
+    });
+  } catch (err) {
+    res.status(500).send("appointment server Down...!");
+  }
+};
 
-   } catch (err) {
-    
-    res.status(500).send("appointment server Down...!")
-   }
-
-}
-
-
-module.exports ={createAppointment, getallappointmentData, getappointmentsbyId, updateAppointment, deleteAppointment}
-
-
+module.exports = {
+  createAppointment,
+  getallappointmentData,
+  getappointmentsbyId,
+  updateAppointment,
+  deleteAppointment,
+};

@@ -1,3 +1,4 @@
+// final 
 import { Link } from "react-router-dom";
 import { LayoutDashboard, Car, Wrench, Building, Calendar } from "lucide-react";
 
@@ -66,6 +67,15 @@ const Sidebar = ({ closeSidebar }) => {
               className="hover:text-yellow-400"
             >
               Book Appointment
+            </Link>
+
+            
+            <Link
+              to="/user/invoices"
+              onClick={closeSidebar}
+              className="hover:text-yellow-400"
+            >
+              Invoices
             </Link>
           </>
         )}

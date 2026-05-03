@@ -1,21 +1,30 @@
 const mongoose = require("mongoose");
-const Appointments = require("./appointmentsSchema");
 
-const invoiceSchema = new mongoose.Schema({
-    invoiceId : String,
-    appointmentId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "Appointments"
+const invoiceSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+      required: true,
     },
-    amount : Number,
-    serviceDetails : String,
-    paymentStatus : {
-        type : String,
-        default : "Unpaid"
-    }
-});
+    appointmentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "appointments",
+      required: true,
+    },
+    paymentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "payments",
+      required: true,
+    },
+    amount: Number,
+    filePath: String,
+    status: {
+      type: String,
+      default: "Generated",
+    },
+  },
+  { timestamps: true }
+);
 
-
-const Invoice = mongoose.model("Invoice", invoiceSchema) ;
-
-module.exports = Invoice ;
+module.exports = mongoose.model("invoices", invoiceSchema);

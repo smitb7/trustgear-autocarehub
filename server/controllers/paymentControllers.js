@@ -1,111 +1,118 @@
 const Razorpay = require("razorpay");
 const Payments = require("../models/paymentSchema");
 const Appointments = require("../models/appointmentsSchema");
+const Invoices = require("../models/invoiceSchema");
+const generateInvoice = require("../utils/generateInvoice");
 const crypto = require("crypto");
 
-// Razorpay instance
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-
-// ==============================
-// ✅ CREATE PAYMENT ORDER
-// ==============================
+// CREATE ORDER
 const createPaymentOrder = async (req, res) => {
   try {
     const { appointmentId, amount } = req.body;
 
-    if (!appointmentId || !amount) {
-      return res.status(400).send({ message: "Missing required fields" });
-    }
-
     const order = await razorpay.orders.create({
-      amount: amount * 100, // convert to paisa
+      amount: amount * 100,
       currency: "INR",
       receipt: "receipt_" + Date.now(),
     });
 
     const paymentData = await Payments.create({
       userId: req.user.id,
-      appointmentId: appointmentId,
-      amount: amount,
+      appointmentId,
+      amount,
       razorpayOrderId: order.id,
       status: "Pending",
     });
 
     res.status(201).send({
-      message: "Payment order created",
-      data: {
-        order,
-        paymentData,
-      },
+      data: { order, paymentData },
     });
-
   } catch (err) {
-    console.error("Create Order Error:", err);
-    res.status(500).send({ message: "Payment server down" });
+    console.log(err);
+    res.status(500).send("Payment error");
   }
 };
 
-
-// ==============================
-// ✅ VERIFY PAYMENT
-// ==============================
+// VERIFY PAYMENT + CREATE INVOICE
 const verifyPayment = async (req, res) => {
   try {
     const {
-      razorpay_order_id,
-      razorpay_payment_id,
+      orderId,
+      paymentId,
       razorpay_signature,
+      appointmentId,
     } = req.body;
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res.status(400).send({ message: "Invalid payment data" });
-    }
-
-    const body = razorpay_order_id + "|" + razorpay_payment_id;
+    const body = orderId + "|" + paymentId;
 
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(body)
       .digest("hex");
 
-    if (expectedSignature === razorpay_signature) {
-      await Payments.findOneAndUpdate(
-        { razorpayOrderId: razorpay_order_id },
-        {
-          status: "Paid",
-          razorpayPaymentId: razorpay_payment_id,
-        }
-      );
-
-      // OPTIONAL: update appointment status
-      await Appointments.findByIdAndUpdate(
-        { _id: req.body.appointmentId },
-        { paymentStatus: "Paid" }
-      );
-
-      return res.status(200).send({
-        message: "Payment verified successfully",
-      });
-    } else {
-      return res.status(400).send({
-        message: "Invalid signature",
-      });
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).send("Invalid signature");
     }
 
+    // after invoice is created
+
+
+    // update payment
+    const payment = await Payments.findOneAndUpdate(
+      { razorpayOrderId: orderId },
+      {
+        status: "Paid",
+        razorpayPaymentId: paymentId,
+      },
+      { new: true }
+    );
+
+    // update appointment
+    await Appointments.findByIdAndUpdate(appointmentId, {
+      paymentStatus: "Paid",
+    });
+
+    // CREATE INVOICE
+    const appointment = await Appointments.findById(appointmentId)
+      .populate("vehicleId")
+      .populate("serviceId")
+      .populate("garageId");
+
+    const invoice = await Invoices.create({
+      userId: payment.userId,
+      appointmentId,
+      paymentId: payment._id,
+      amount: payment.amount,
+    });
+
+    const filePath = await generateInvoice({
+      ...invoice.toObject(),
+      appointment,
+    });
+
+    invoice.filePath = filePath;
+    await invoice.save();
+
+    // link invoice to appointment
+    await Appointments.findByIdAndUpdate(appointmentId, {
+      invoiceId: invoice._id,
+    });
+
+    res.status(200).send({
+      message: "Payment verified & invoice created",
+    });
+
   } catch (err) {
-    console.error("Verify Payment Error:", err);
-    res.status(500).send({ message: "Payment verification failed" });
+    console.log(err);
+    res.status(500).send("Verification failed");
   }
 };
 
-
-// ==============================
-// ✅ EXPORTS
-// ==============================
 module.exports = {
   createPaymentOrder,
   verifyPayment,

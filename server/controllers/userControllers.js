@@ -219,7 +219,7 @@ const loginUser = async (req, res) => {
           role: userFound.role,
         },
         "This-is-super-secret-string-which-can-be-anything",
-        { expiresIn: "2h" }
+        { expiresIn: "15m" }
       );
   
       //  STEP 4: Send response

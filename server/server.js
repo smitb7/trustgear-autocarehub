@@ -29,7 +29,7 @@ const {garageRouter} = require("./routs/garageRoutes")
 //appointment router
 const {appointmentRouter} = require("./routs/appointmentRoutes")
 //invoice router
-const {invoiceRouter} = require("./routs/invoiceRoutes");
+const invoiceRouter = require("./routs/invoiceRoutes");
 // const { loginUser } = require("./controllers/userControllers");
 
 //auth require

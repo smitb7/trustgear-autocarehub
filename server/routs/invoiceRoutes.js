@@ -1,17 +1,31 @@
-const express = require('express')
-const invoiceRouter = express.Router()
+const express = require("express");
+const router = express.Router();
+const authMiddleware = require("../middlewares/authMiddleware");
 
-const {getallInvoices, getinvoicebyId, createInvoice, updateInvoice, deleteInvoice} = require('../controllers/invoiceControllers')
-const authMiddleware = require("../middlewares/authMiddleware")
+const {
+  createInvoice,
+  downloadInvoice,
+} = require("../controllers/invoiceControllers");
 
+const Invoices = require("../models/invoiceSchema");
 
+// GET USER INVOICES
+router.get("/", authMiddleware, async (req, res) => {
+  try {
+    const invoices = await Invoices.find({
+      userId: req.user.id,
+    }).sort({ createdAt: -1 });
 
-invoiceRouter.get("/",authMiddleware, getallInvoices)
-invoiceRouter.get("/:id",authMiddleware, getinvoicebyId)
-invoiceRouter.post("/",authMiddleware, createInvoice)
-invoiceRouter.put("/:id",authMiddleware, updateInvoice)
-invoiceRouter.delete("/:id",authMiddleware, deleteInvoice)
+    res.status(200).json({ data: invoices });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching invoices" });
+  }
+});
 
+// DOWNLOAD
+router.get("/download/:id", authMiddleware, downloadInvoice);
 
+// OPTIONAL CREATE
+router.post("/create", authMiddleware, createInvoice);
 
-module.exports = {invoiceRouter}
+module.exports = router;

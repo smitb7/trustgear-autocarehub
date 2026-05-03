@@ -19,7 +19,8 @@ import UserAppointments from "../pages/UserAppointments";
 import UserBookAppointment from "../pages/UserBookAppointment";
 import Signup from "../pages/Signup";
 
-
+//  ADD THIS IMPORT
+import Invoices from "../pages/Invoices";
 
 export default function AppRoutes() {
   return (
@@ -27,6 +28,7 @@ export default function AppRoutes() {
       {/* PUBLIC */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+
       {/* ADMIN ROUTES */}
       <Route
         element={
@@ -46,7 +48,6 @@ export default function AppRoutes() {
         <Route path="/garages/add" element={<AddGarage />} />
       </Route>
 
-      {/* USER ROUTES  FIXED */}
       {/* USER ROUTES */}
       <Route
         element={
@@ -57,6 +58,9 @@ export default function AppRoutes() {
       >
         <Route path="/user" element={<UserAppointments />} />
         <Route path="/user/book" element={<UserBookAppointment />} />
+
+        {/* ADDEED THIS LINE */}
+        <Route path="/user/invoices" element={<Invoices />} />
       </Route>
     </Routes>
   );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { getAppointments, updateAppointment } from "../api/appointmentApi";
+import { getAppointments } from "../api/appointmentApi";
 import { createOrder, verifyPayment } from "../api/paymentApi";
+import { downloadInvoice } from "../api/invoiceApi";
 import { Link } from "react-router-dom";
 
 const UserAppointments = () => {
@@ -10,9 +11,16 @@ const UserAppointments = () => {
   const fetchAppointments = async () => {
     try {
       const res = await getAppointments();
-      setAppointments(res?.data?.data || []);
+
+      //  IMPORTANT: normalize payment status
+      const updated = (res?.data?.data || []).map((item) => ({
+        ...item,
+        paymentStatus: item.invoiceId ? "Paid" : "Pending",
+      }));
+
+      setAppointments(updated);
     } catch (err) {
-      console.error(err);
+      console.error("Fetch appointments error:", err);
     } finally {
       setLoading(false);
     }
@@ -22,74 +30,46 @@ const UserAppointments = () => {
     fetchAppointments();
   }, []);
 
-  //  PAYMENT FUNCTION
-  // const handlePayment = async (appointmentId) => {
-  //   try {
-  //     const amount = 500; // make dynamic later
+  // DOWNLOAD INVOICE
+  const handleDownload = async (invoiceId) => {
+    try {
+      const token = localStorage.getItem("token");
 
-  //     const { data } = await createOrder({
-  //       appointmentId,
-  //       amount,
-  //     });
+      const res = await downloadInvoice(invoiceId, token);
 
-  //     const order = data?.data?.order;
+      const blob = new Blob([res.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
 
-  //     if (!order) {
-  //       console.error("Order not created");
-  //       return;
-  //     }
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `invoice_${invoiceId}.pdf`;
 
-  //     const options = {
-  //       key: import.meta.env.VITE_RAZORPAY_KEY,
-  //       amount: order.amount,
-  //       currency: "INR",
-  //       name: "AutoCareHub",
-  //       description: "Service Payment",
-  //       order_id: order.id,
+      document.body.appendChild(link);
+      link.click();
 
-  //       handler: async function (response) {
-  //         try {
-  //           await verifyPayment({
-  //             orderId: response.razorpay_order_id,
-  //             paymentId: response.razorpay_payment_id,
-  //             razorpay_signature: response.razorpay_signature,
-  //             appointmentId,
-  //           });
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download error:", err);
+      alert("Failed to download invoice");
+    }
+  };
 
-  //           alert("Payment successful");
-  //           fetchAppointments();
-  //         } catch (err) {
-  //           console.error("Verification error:", err);
-  //         }
-  //       },
-
-  //       theme: {
-  //         color: "#2563eb",
-  //       },
-  //     };
-
-  //     const rzp = new window.Razorpay(options);
-  //     rzp.open();
-  //   } catch (err) {
-  //     console.error("Payment error:", err);
-  //   }
-  // };
-
-  // for dynamic payment 
+  // PAYMENT
   const handlePayment = async (appointmentId, amount) => {
     try {
       if (!amount) {
         alert("Price not found");
         return;
       }
-  
+
       const { data } = await createOrder({
         appointmentId,
         amount,
       });
-  
+
       const order = data?.data?.order;
-  
+
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY,
         amount: order.amount,
@@ -97,7 +77,7 @@ const UserAppointments = () => {
         name: "AutoCareHub",
         description: "Service Payment",
         order_id: order.id,
-  
+
         handler: async function (response) {
           await verifyPayment({
             orderId: response.razorpay_order_id,
@@ -105,34 +85,33 @@ const UserAppointments = () => {
             razorpay_signature: response.razorpay_signature,
             appointmentId,
           });
-  
+
           alert("Payment successful");
-          fetchAppointments();
+
+          // ✅ instant UI update (no wait)
+          setAppointments((prev) =>
+            prev.map((item) =>
+              item._id === appointmentId
+                ? { ...item, paymentStatus: "Paid" }
+                : item
+            )
+          );
+
+          fetchAppointments(); // sync with backend
         },
       };
-  
+
       const rzp = new window.Razorpay(options);
       rzp.open();
-  
     } catch (err) {
       console.error(err);
     }
   };
 
-
-
-
-
-
-  // CANCEL FUNCTION
-  const handleCancel = async (id) => {
-    try {
-      await updateAppointment(id, { status: "Cancelled" });
-      fetchAppointments();
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // LOADING
+  if (loading) {
+    return <div className="p-6">Loading appointments...</div>;
+  }
 
   return (
     <div className="p-6">
@@ -141,6 +120,7 @@ const UserAppointments = () => {
         <h1 className="text-3xl font-bold text-gray-800">
           My Appointments
         </h1>
+
         <Link
           to="/user/book"
           className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition shadow"
@@ -160,6 +140,7 @@ const UserAppointments = () => {
                 <th className="p-3">Garage</th>
                 <th className="p-3">Date</th>
                 <th className="p-3">Status</th>
+                <th className="p-3">Payment</th>
                 <th className="p-3">Action</th>
               </tr>
             </thead>
@@ -208,27 +189,53 @@ const UserAppointments = () => {
                       </span>
                     </td>
 
-                    {/* ACTION BUTTONS */}
+                    {/* PAYMENT STATUS */}
+                    <td className="p-3">
+                      {item.paymentStatus === "Paid" ? (
+                        <span className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                          Paid
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-full">
+                          Pending
+                        </span>
+                      )}
+                    </td>
+
+                    {/* ACTION */}
                     <td className="p-3 space-x-2">
-                      {/*  PAY BUTTON (only when Approved) */}
+                      {/* DISABLED BUTTON AFTER PAYMENT */}
                       {item.status === "Approved" && (
                         <button
-                         // for dynamic payment 
-                          onClick={() => handlePayment(item._id, item.servicePrice || item.serviceId?.price)}
-                          className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                          disabled={item.paymentStatus === "Paid"}
+                          onClick={() =>
+                            handlePayment(
+                              item._id,
+                              item.servicePrice || item.serviceId?.price
+                            )
+                          }
+                          className={`px-3 py-1 rounded text-white ${
+                            item.paymentStatus === "Paid"
+                              ? "bg-green-300 cursor-not-allowed"
+                              : "bg-green-600 hover:bg-green-700"
+                          }`}
                         >
-                          Pay
+                          {item.paymentStatus === "Paid"
+                            ? "Paid"
+                            : "Pay"}
                         </button>
                       )}
 
-                      {/* CANCEL */}
-                      {item.status !== "Cancelled" &&
-                        item.status !== "Completed" && (
+                      {/* INVOICE */}
+                      {item.paymentStatus === "Paid" &&
+                        item.invoiceId && (
                           <button
-                            onClick={() => handleCancel(item._id)}
-                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                            onClick={() =>
+                              handleDownload(item.invoiceId)
+                            }
+                            className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700"
                           >
-                            Cancel
+                            Invoice
                           </button>
                         )}
                     </td>
@@ -236,15 +243,11 @@ const UserAppointments = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="p-4 text-gray-500">
-                    <div className="text-center py-10 text-gray-500">
-                      <p className="text-lg">
-                        No appointments yet 🚗
-                      </p>
-                      <p className="text-sm">
-                        Click "Book Appointment" to get started
-                      </p>
-                    </div>
+                  <td
+                    colSpan="7"
+                    className="p-4 text-center text-gray-500"
+                  >
+                    No appointments found
                   </td>
                 </tr>
               )}
